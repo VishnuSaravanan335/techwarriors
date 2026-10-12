@@ -8,3 +8,4 @@ venv/
 .venv/
 *.sqlite3-journal
 public/
+node_modules/
