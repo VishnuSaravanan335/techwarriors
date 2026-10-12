@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}Photo-based AI Disease Screening & Care Plan | PashuRaksha AI{% endblock %}
+{% block page_heading %}<span data-lang-en="AI Photo Screening & Care Plan" data-lang-ta="AI புகைப்பட ஆய்வு & பராமரிப்பு">AI Photo Screening & Care Plan</span>{% endblock %}
+{% block page_subheading %}<span data-lang-en="Veterinary vision pipeline: Body condition scoring, lesions, cause analysis & care plans" data-lang-ta="கால்நடை புகைப்பட ஆய்வு: உடல் நிலை மதிப்பீடு, புண்கள் மற்றும் பராமரிப்பு வழிகாட்டல்">Veterinary vision pipeline: Body condition scoring, lesions, cause analysis & care plans</span>{% endblock %}
+
+{% block content %}
+<div class="grid-cols-2">
+
+  <!-- Left: Upload & Camera Section -->
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-camera" style="color: var(--navy);"></i> Capture or Upload Animal Photo</span>
+      <span class="badge-tag badge-gold">Veterinary Vision Pipeline</span>
+    </div>
+
+    <form id="vision-upload-form" enctype="multipart/form-data">
+      <div class="form-group">
+        <label class="form-label">Select Animal ID *</label>
+        <select id="vision-animal-id" class="form-control" required>
+          <option value="">Loading herd...</option>
+        </select>
+      </div>
+
+      <!-- File Upload Box -->
+      <div class="form-group">
+        <label class="form-label">Animal Photograph (File or Camera)</label>
+        <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 24px 16px; text-align: center; background: #f8fafc; cursor: pointer;" onclick="document.getElementById('photo-input').click()">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 38px; color: var(--navy); margin-bottom: 8px;"></i>
+          <p style="color: var(--navy); font-size: 0.92rem; font-weight: 700;">Click to browse image or snap photo</p>
+          <p style="color: var(--text-muted); font-size: 0.78rem;">Supports JPG, PNG (Max 10MB). Full side-profile (for body condition), flank, mouth, or hooves.</p>
+          <input type="file" id="photo-input" name="photo" accept="image/*" style="display: none;" onchange="previewSelectedImage(this)">
+        </div>
+      </div>
+
+      <!-- Image Preview -->
+      <div id="image-preview-container" style="display: none; margin-bottom: 18px; text-align: center;">
+        <img id="image-preview" src="" alt="Selected Preview" style="max-height: 200px; border-radius: 10px; border: 1px solid var(--border-color); box-shadow: var(--shadow-subtle);">
+        <div id="selected-file-label" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px;"></div>
+      </div>
+
+      <!-- Quick Test Clinical Presets including Underweight Cow -->
+      <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-left: 4px solid var(--blue-primary); border-radius: 10px; padding: 14px; margin-bottom: 20px;">
+        <div style="font-size: 0.84rem; font-weight: 800; color: var(--blue-dark); margin-bottom: 8px;">
+          <i class="fa-solid fa-flask" style="color: var(--gold);"></i> <span data-lang-en="Instant Clinical Demonstration Presets:" data-lang-ta="மாதிரி மருத்துவப் பரிசோதனைகள்:">Instant Clinical Demonstration Presets:</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-preset-underweight" onclick="setPresetSample('thin_cow_underweight_ribs')" style="border: 1.5px solid var(--gold-border);">
+            <i class="fa-solid fa-bone" style="color: var(--gold);"></i> <span data-lang-en="Underweight Cow (BCS < 2.0)" data-lang-ta="மெலிந்த மாடு (BCS < 2.0)">Underweight Cow (BCS &lt; 2.0)</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-preset-lsd" onclick="setPresetSample('skin_disease_nodules')" style="border: 1.5px solid var(--red-border);">
+            <i class="fa-solid fa-circle-dot" style="color: var(--red);"></i> <span data-lang-en="Lumpy Skin Nodules" data-lang-ta="சருமக் கட்டிகள்">Lumpy Skin Nodules</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-preset-fmd" onclick="setPresetSample('fmd_hoof_lesions')" style="border: 1.5px solid var(--red-border);">
+            <i class="fa-solid fa-virus" style="color: var(--red);"></i> <span data-lang-en="FMD Hoof/Mouth Lesion" data-lang-ta="கோமாரி புண்கள்">FMD Hoof/Mouth Lesion</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-preset-healthy" onclick="setPresetSample('healthy_normal_coat')" style="border: 1.5px solid #a7f3d0;">
+            <i class="fa-solid fa-check" style="color: var(--green-dark);"></i> <span data-lang-en="Healthy Normal Coat" data-lang-ta="ஆரோக்கியமான மாடு">Healthy Normal Coat</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-preset-blurry" onclick="setPresetSample('blurry_dark_photo')" style="border: 1.5px solid #cbd5e1;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: var(--gold);"></i> <span data-lang-en="Blurry / Bad Lighting" data-lang-ta="மங்கலான படம்">Blurry / Bad Lighting</span>
+          </button>
+        </div>
+        <input type="hidden" id="selected-sample-type" name="sample_type" value="">
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btn-submit-vision" style="width: 100%; justify-content: center; padding: 12px;">
+        <i class="fa-solid fa-brain"></i> Analyze Image & Generate Personalized Care Plan
+      </button>
+    </form>
+  </div>
+
+  <!-- Right: Screening Results & Personalized Care Plan Display -->
+  <div>
+    <!-- Initial Placeholder -->
+    <div id="vision-result-placeholder" class="card" style="text-align: center; padding: 60px 30px;">
+      <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 48px; color: var(--silver-muted); margin-bottom: 16px;"></i>
+      <h3 style="color: var(--navy); margin-bottom: 8px;">Veterinary Intelligence Engine Ready</h3>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; max-width: 400px; margin: 0 auto;">
+        Upload an animal photograph or click <strong>"Underweight Cow"</strong> to experience body-condition scoring, multiple differential causes, safe immediate care guidance, follow-up questionnaires, and veterinary escalation.
+      </p>
+    </div>
+
+    <!-- Active Result & Care Plan Card -->
+    <div id="vision-result-card" class="card" style="display: none; border-width: 2px;">
+      <div class="card-title">
+        <span><i class="fa-solid fa-clipboard-check" style="color: var(--navy);"></i> Veterinary Care Plan & Visual Assessment</span>
+        <span id="vision-risk-badge"></span>
+      </div>
+
+      <!-- Tags Bar: Quality & BCS -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+        <span class="badge-tag" id="vision-quality-tag" style="background: var(--silver-light); color: var(--navy); border: 1px solid var(--border-color);">
+          Quality: Passed
+        </span>
+        <span class="badge-tag" id="vision-confidence-tag" style="background: #f1f5f9; color: var(--navy); border: 1px solid var(--border-color);">
+          Confidence: 88%
+        </span>
+        <span class="badge-tag" id="vision-bcs-tag" style="background: var(--gold-light); color: var(--gold-dark); border: 1px solid var(--gold-border);">
+          BCS: Underweight
+        </span>
+      </div>
+
+      <!-- 1. AI Visual Findings -->
+      <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 4px;">
+          1. AI Visual Findings (Observable Anatomical Signs)
+        </div>
+        <div id="vision-condition-title" style="font-size: 1.05rem; font-weight: 800; color: var(--navy); margin-bottom: 6px;">
+          Condition Name
+        </div>
+        <p id="vision-findings-text" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;"></p>
+      </div>
+
+      <!-- 2. Possible Underlying Causes (Differential Analysis) -->
+      <div style="margin-bottom: 16px;">
+        <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--navy); margin-bottom: 8px;">
+          <i class="fa-solid fa-list-ol" style="color: var(--gold);"></i> 2. Possible Underlying Causes (Not assumed from shape alone):
+        </h4>
+        <ul id="vision-causes-list" style="padding-left: 20px; font-size: 0.84rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 6px;">
+        </ul>
+      </div>
+
+      <!-- 3. Safe Immediate Care (Farmer First Aid) -->
+      <div style="background: var(--green-light); border: 1px solid var(--green-border); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.9rem; font-weight: 800; color: var(--green-dark); margin-bottom: 8px;">
+          <i class="fa-solid fa-shield-halved"></i> 3. Safe Immediate Care Plan:
+        </h4>
+        <ul id="vision-safe-care-list" style="padding-left: 20px; font-size: 0.84rem; color: #064e3b; display: flex; flex-direction: column; gap: 6px;">
+        </ul>
+      </div>
+
+      <!-- 4. Follow-up Questions (Symptom Exploration) -->
+      <div style="background: var(--gold-light); border: 1px solid var(--gold-border); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.86rem; font-weight: 800; color: var(--gold-dark); margin-bottom: 6px;">
+          <i class="fa-solid fa-circle-question"></i> 4. Important Follow-up Questions to Check:
+        </h4>
+        <ul id="vision-followup-list" style="padding-left: 20px; font-size: 0.82rem; color: #78350f; display: flex; flex-direction: column; gap: 4px;">
+        </ul>
+      </div>
+
+      <!-- 5. Veterinary Care Plan & Escalation -->
+      <div style="margin-bottom: 16px;">
+        <h4 style="font-size: 0.86rem; font-weight: 800; color: var(--navy); margin-bottom: 6px;">
+          <i class="fa-solid fa-user-doctor" style="color: var(--navy);"></i> 5. Veterinary Care Plan:
+        </h4>
+        <p id="vision-vet-plan-text" style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 8px;"></p>
+        
+        <div style="background: var(--red-light); border: 1px solid var(--red-border); border-radius: 8px; padding: 10px; font-size: 0.8rem; color: var(--red-dark);">
+          <strong><i class="fa-solid fa-triangle-exclamation"></i> Escalation Triggers:</strong>
+          <span id="vision-escalation-text"></span>
+        </div>
+      </div>
+
+      <!-- Action Buttons: Disease Library Link & Emergency Calling -->
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+        <a href="#" id="link-disease-library" class="btn btn-secondary btn-sm" style="flex: 1; justify-content: center;">
+          <i class="fa-solid fa-book-medical"></i> View Full Remedial Protocol
+        </a>
+        <a href="/emergency-vet" class="btn btn-danger btn-sm" id="btn-emergency-action" style="flex: 1; justify-content: center;">
+          <i class="fa-solid fa-truck-medical"></i> Emergency 1962 Referral
+        </a>
+      </div>
+
+      <div style="font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px;">
+        <i class="fa-solid fa-circle-exclamation"></i> <strong>Medical & Medicine Safety Rule:</strong> Drug choices, dewormers, and antibiotic doses require clinical evaluation of animal weight, age, and organ function by a licensed veterinarian. Never administer unprescribed medicines.
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadVisionPage() {
+  try {
+    const animals = await fetchJSON('/api/animals');
+    const select = document.getElementById('vision-animal-id');
+    select.innerHTML = animals.map(a => `
+      <option value="${a.id}">${a.animal_code} - ${a.animal_name || 'Unnamed'} (${a.species})</option>
+    `).join('');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const preAnimalId = urlParams.get('animal_id');
+    if (preAnimalId) select.value = preAnimalId;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function previewSelectedImage(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('image-preview').src = e.target.result;
+      document.getElementById('selected-file-label').innerText = `${file.name} (${Math.round(file.size / 1024)} KB)`;
+      document.getElementById('image-preview-container').style.display = 'block';
+    }
+    reader.readAsDataURL(file);
+    document.getElementById('selected-sample-type').value = '';
+    clearPresetHighlights();
+  }
+}
+
+function clearPresetHighlights() {
+  ['btn-preset-underweight', 'btn-preset-lsd', 'btn-preset-fmd', 'btn-preset-healthy', 'btn-preset-blurry'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.border = '1px solid var(--border-color)';
+  });
+}
+
+function setPresetSample(sampleType) {
+  document.getElementById('selected-sample-type').value = sampleType;
+  document.getElementById('photo-input').value = '';
+  document.getElementById('image-preview-container').style.display = 'none';
+  clearPresetHighlights();
+
+  let btnId = '';
+  let friendlyName = '';
+  if (sampleType === 'thin_cow_underweight_ribs') { btnId = 'btn-preset-underweight'; friendlyName = 'Underweight Cow (Prominent Ribs)'; }
+  else if (sampleType === 'skin_disease_nodules') { btnId = 'btn-preset-lsd'; friendlyName = 'Lumpy Skin Nodules'; }
+  else if (sampleType === 'fmd_hoof_lesions') { btnId = 'btn-preset-fmd'; friendlyName = 'FMD Lesions'; }
+  else if (sampleType === 'healthy_normal_coat') { btnId = 'btn-preset-healthy'; friendlyName = 'Healthy Coat'; }
+  else if (sampleType === 'blurry_dark_photo') { btnId = 'btn-preset-blurry'; friendlyName = 'Blurry Image'; }
+
+  if (btnId) {
+    const btn = document.getElementById(btnId);
+    if (btn) btn.style.border = '2px solid var(--navy)';
+  }
+
+  showNotification(`Selected demo preset: ${friendlyName}. Click "Analyze Image" to see the care plan.`, 'info');
+}
+
+document.getElementById('vision-upload-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const animalId = document.getElementById('vision-animal-id').value;
+  if (!animalId) {
+    showNotification('Please select an animal', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit-vision');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Image & Generating Care Plan...';
+
+  const formData = new FormData(this);
+  formData.set('animal_id', animalId);
+
+  try {
+    const res = await fetch('/api/vision/screen', {
+      method: 'POST',
+      body: formData
+    }).then(r => r.json());
+
+    if (!res.success) throw new Error(res.error || 'Failed');
+
+    showNotification('AI Vision Care Plan generated successfully!', 'success');
+    renderCarePlanResult(res.screening);
+  } catch (err) {
+    showNotification('Screening error: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-brain"></i> Analyze Image & Generate Personalized Care Plan';
+  }
+});
+
+function renderCarePlanResult(screening) {
+  document.getElementById('vision-result-placeholder').style.display = 'none';
+  const card = document.getElementById('vision-result-card');
+  card.style.display = 'block';
+
+  // Badges
+  document.getElementById('vision-risk-badge').innerHTML = getRiskBadge(screening.risk_level);
+  document.getElementById('vision-quality-tag').innerText = `Quality: ${screening.image_quality_check}`;
+  document.getElementById('vision-confidence-tag').innerText = `Confidence: ${Math.round(screening.confidence * 100)}%`;
+  document.getElementById('vision-bcs-tag').innerText = `BCS: ${screening.bcs_category || 'Assessed'}`;
+
+  // 1. Findings
+  document.getElementById('vision-condition-title').innerText = screening.screened_condition;
+  document.getElementById('vision-findings-text').innerText = screening.visual_findings;
+
+  // 2. Differential Causes
+  const causesList = document.getElementById('vision-causes-list');
+  if (screening.differential_causes && screening.differential_causes.length > 0) {
+    causesList.innerHTML = screening.differential_causes.map(c => `<li>${c}</li>`).join('');
+  } else {
+    causesList.innerHTML = '<li>General physiological monitoring advised.</li>';
+  }
+
+  // 3. Safe Immediate Care
+  const safeList = document.getElementById('vision-safe-care-list');
+  if (screening.safe_immediate_care && screening.safe_immediate_care.length > 0) {
+    safeList.innerHTML = screening.safe_immediate_care.map(s => `<li>${s}</li>`).join('');
+  } else {
+    safeList.innerHTML = '<li>Provide fresh water, standard green forage, and comfortable bedding.</li>';
+  }
+
+  // 4. Follow-up Questions
+  const fuList = document.getElementById('vision-followup-list');
+  if (screening.followup_questions && screening.followup_questions.length > 0) {
+    fuList.innerHTML = screening.followup_questions.map(q => `<li>${q}</li>`).join('');
+  } else {
+    fuList.innerHTML = '<li>Observe appetite and rumination over the next 24 hours.</li>';
+  }
+
+  // 5. Vet Care Plan & Escalation
+  document.getElementById('vision-vet-plan-text').innerText = screening.veterinary_care_plan || 'Consult a veterinarian for detailed examination.';
+  document.getElementById('vision-escalation-text').innerText = screening.escalation_triggers || 'Seek urgent help if animal collapses or stops eating.';
+
+  // Disease Library link
+  const libLink = document.getElementById('link-disease-library');
+  if (screening.disease_library_key) {
+    libLink.href = `/disease-library?key=${screening.disease_library_key}`;
+    libLink.style.display = 'inline-flex';
+  } else {
+    libLink.href = '/disease-library';
+  }
+
+  // Card border styling
+  if (screening.risk_level === 'High') {
+    card.style.borderColor = 'var(--red-border)';
+  } else if (screening.risk_level === 'Moderate') {
+    card.style.borderColor = 'var(--gold-border)';
+  } else {
+    card.style.borderColor = 'var(--green-border)';
+  }
+
+  card.scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', loadVisionPage);
+</script>
+{% endblock %}

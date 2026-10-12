@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Mode 1: IoT Sensor Telemetry | PashuRaksha AI{% endblock %}
+{% block page_heading %}Mode 1: IoT Wearable Sensor Monitoring{% endblock %}
+{% block page_subheading %}Automated continuous telemetry from ESP32 biometric collars. Live stream & simulated hardware generator.{% endblock %}
+
+{% block content %}
+<!-- Top Row: Device Connection Controls & Simulation Panel -->
+<div class="card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: rgba(14, 165, 233, 0.3);">
+  <div class="card-title">
+    <span><i class="fa-solid fa-satellite-dish" style="color: var(--secondary);"></i> IoT Hardware Link & Telemetry Simulator</span>
+    <span class="badge-tag" style="background: rgba(14, 165, 233, 0.2); color: #0ea5e9;">ESP32 / ESP8266 REST & MQTT Compatible</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: flex-end;">
+    <div class="form-group" style="margin-bottom: 0;">
+      <label class="form-label">Select Monitored Animal</label>
+      <select id="iot-animal-select" class="form-control">
+        <option value="">Loading IoT-enabled herd...</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 0;">
+      <label class="form-label">Telemetry Injection Scenario</label>
+      <select id="iot-scenario-select" class="form-control">
+        <option value="normal" selected>Normal Baseline (Healthy vitals)</option>
+        <option value="fever">Fever Spike (Hyperthermia 40.2°C)</option>
+        <option value="lethargic">Depressed Rumination & Inactive</option>
+        <option value="critical_infection">Critical Sepsis / High Fever (41.0°C)</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 0;">
+      <label class="form-label">Simulation Stream</label>
+      <button type="button" class="btn btn-primary" id="btn-inject-telemetry" style="width: 100%;">
+        <i class="fa-solid fa-play"></i> Emit Sensor Reading
+      </button>
+    </div>
+
+    <div>
+      <button type="button" class="btn btn-secondary" id="btn-toggle-auto" style="height: 44px;">
+        <i class="fa-solid fa-rotate"></i> Auto-Stream: OFF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Active Animal Telemetry Live Cards -->
+<div class="grid-cols-4">
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-title">Body Temperature</span>
+      <div class="stat-icon" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e;">
+        <i class="fa-solid fa-temperature-three-quarters"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="live-temp">38.6°C</div>
+    <div class="stat-sub" id="live-temp-status">Baseline Normal (Ref: 38.0 - 39.3°C)</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-title">Heart Rate</span>
+      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+        <i class="fa-solid fa-heart-pulse"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="live-hr">68 bpm</div>
+    <div class="stat-sub" id="live-hr-status">Normal Rhythm (Ref: 48 - 84 bpm)</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-title">Rumination Time</span>
+      <div class="stat-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="live-rumination">52 min/hr</div>
+    <div class="stat-sub">Rumen Motility: Optimal</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-header">
+      <span class="stat-title">Collar Activity & Steps</span>
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+        <i class="fa-solid fa-person-walking"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="live-steps">180 steps</div>
+    <div class="stat-sub" id="live-activity-state">Normal Grazing Posture</div>
+  </div>
+</div>
+
+<!-- Telemetry Log Table -->
+<div class="card">
+  <div class="card-title">
+    <span><i class="fa-solid fa-clock-history" style="color: var(--secondary);"></i> Live Biometric Telemetry Stream</span>
+    <span class="badge-tag" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+      <i class="fa-solid fa-circle" style="font-size: 8px;"></i> Online Receiving
+    </span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Device ID</th>
+          <th>Temperature</th>
+          <th>Heart Rate</th>
+          <th>Activity</th>
+          <th>Rumination</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="telemetry-table-body">
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 25px;">Connecting to telemetry stream...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Physical Hardware Integration Guide -->
+<div class="card" style="background: rgba(255, 255, 255, 0.02);">
+  <div class="card-title">
+    <span><i class="fa-solid fa-terminal" style="color: var(--text-muted);"></i> Physical ESP32 / Arduino Integration Webhook</span>
+  </div>
+  <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 12px;">
+    Hardware collars can transmit JSON payloads over HTTP POST or MQTT directly to this endpoint:
+  </p>
+  <pre style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; font-size: 0.8rem; color: var(--primary); overflow-x: auto;">
+POST http://127.0.0.1:5000/api/iot/telemetry
+Content-Type: application/json
+
+{
+  "device_id": "ESP32-TAG-1047",
+  "temperature": 39.1,
+  "heart_rate": 74,
+  "activity": "Normal Active"
+}
+  </pre>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let autoStreamInterval = null;
+
+async function loadIoTPage() {
+  try {
+    const animals = await fetchJSON('/api/animals');
+    const select = document.getElementById('iot-animal-select');
+    
+    // Filter animals with IoT or include all
+    select.innerHTML = animals.map(a => `
+      <option value="${a.id}" data-device="${a.iot_device_id || 'ESP32-TAG-' + a.animal_code.split('-')[1]}">
+        ${a.animal_code} - ${a.animal_name || 'Unnamed'} (${a.iot_device_id || 'Tag auto-assigned'})
+      </option>
+    `).join('');
+
+    // Pre-select if URL query param exists
+    const urlParams = new URLSearchParams(window.location.search);
+    const preAnimalId = urlParams.get('animal_id');
+    if (preAnimalId) select.value = preAnimalId;
+
+    loadAnimalTelemetry();
+  } catch (err) {
+    console.error(err);
+  }
+
+  document.getElementById('iot-animal-select').addEventListener('change', loadAnimalTelemetry);
+}
+
+async function loadAnimalTelemetry() {
+  const animalId = document.getElementById('iot-animal-select').value;
+  if (!animalId) return;
+
+  try {
+    const data = await fetchJSON(`/api/animals/${animalId}`);
+    const readings = data.recent_readings || [];
+
+    if (readings.length > 0) {
+      const latest = readings[0];
+      document.getElementById('live-temp').innerText = `${latest.temperature}°C`;
+      document.getElementById('live-hr').innerText = `${latest.heart_rate} bpm`;
+      document.getElementById('live-rumination').innerText = `${latest.rumination_time_min || 45} min/hr`;
+      document.getElementById('live-steps').innerText = `${latest.steps_per_hour || 150} steps`;
+      document.getElementById('live-activity-state').innerText = latest.activity_level;
+
+      if (latest.is_abnormal) {
+        document.getElementById('live-temp-status').innerText = '⚠️ ABNORMAL: Reading exceeded normal bounds';
+        document.getElementById('live-temp-status').style.color = '#f43f5e';
+      } else {
+        document.getElementById('live-temp-status').innerText = 'Within normal physiological range';
+        document.getElementById('live-temp-status').style.color = '#10b981';
+      }
+
+      // Render table
+      const tbody = document.getElementById('telemetry-table-body');
+      tbody.innerHTML = readings.slice(0, 10).map(r => `
+        <tr>
+          <td>${r.recorded_at}</td>
+          <td><span style="font-family: monospace; color: var(--secondary);">${r.device_id}</span></td>
+          <td style="font-weight: 700; color: ${r.temperature > 39.5 ? '#f43f5e' : '#fff'};">${r.temperature}°C</td>
+          <td style="color: ${r.heart_rate > 85 ? '#f43f5e' : '#fff'};">${r.heart_rate} bpm</td>
+          <td>${r.activity_level}</td>
+          <td>${r.rumination_time_min || 45} min</td>
+          <td>
+            ${r.is_abnormal ? 
+              `<span class="risk-pill risk-high"><i class="fa-solid fa-triangle-exclamation"></i> Anomaly Alert</span>` : 
+              `<span class="risk-pill risk-low"><i class="fa-solid fa-check"></i> Normal</span>`
+            }
+          </td>
+        </tr>
+      `).join('');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function injectTelemetry() {
+  const animalId = document.getElementById('iot-animal-select').value;
+  const scenario = document.getElementById('iot-scenario-select').value;
+  if (!animalId) return;
+
+  try {
+    const res = await fetchJSON('/api/iot/simulate', {
+      method: 'POST',
+      body: JSON.stringify({ animal_id: parseInt(animalId), scenario: scenario })
+    });
+
+    showNotification(`New telemetry emitted (${scenario}): ${res.telemetry.temperature}°C, ${res.telemetry.heart_rate} bpm`, res.telemetry.is_abnormal ? 'error' : 'success');
+    loadAnimalTelemetry();
+  } catch (err) {
+    showNotification('Telemetry emission failed: ' + err.message, 'error');
+  }
+}
+
+document.getElementById('btn-inject-telemetry').addEventListener('click', injectTelemetry);
+
+document.getElementById('btn-toggle-auto').addEventListener('click', function() {
+  const btn = this;
+  if (autoStreamInterval) {
+    clearInterval(autoStreamInterval);
+    autoStreamInterval = null;
+    btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Auto-Stream: OFF';
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-secondary');
+  } else {
+    autoStreamInterval = setInterval(injectTelemetry, 6000);
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Auto-Stream: 6s';
+    btn.classList.remove('btn-secondary');
+    btn.classList.add('btn-primary');
+    injectTelemetry();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', loadIoTPage);
+</script>
+{% endblock %}

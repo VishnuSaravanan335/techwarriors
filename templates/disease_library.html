@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Veterinary Disease Knowledge Base & Remedial Library | PashuRaksha AI{% endblock %}
+{% block page_heading %}<span data-lang-en="Veterinary Disease Knowledge Base & Remedial Library" data-lang-ta="கால்நடை நோய் & மருத்துவக் களஞ்சியம்">Veterinary Disease Knowledge Base & Remedial Library</span>{% endblock %}
+{% block page_subheading %}<span data-lang-en="Comprehensive, reviewed livestock disease entries with differential diagnoses, safe first aid, medicine restrictions & biosecurity protocols" data-lang-ta="கால்நடை நோய்கள், அறிகுறிகள், பாதுகாப்பான முதலுதவி மற்றும் தடுப்பு வழிகாட்டல்கள்">Comprehensive, reviewed livestock disease entries with differential diagnoses, safe first aid, medicine restrictions & biosecurity protocols</span>{% endblock %}
+
+{% block content %}
+<!-- Search & Filter Bar -->
+<div class="card card-blue" style="padding: 18px 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, #0284c7 0%, #10b981 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25); flex-shrink: 0;">
+        <i class="fa-solid fa-book-medical"></i>
+      </div>
+      <div>
+        <h4 style="color: var(--text-primary); font-size: 1.05rem; font-weight: 800;" data-lang-en="Official Veterinary Clinical Repository" data-lang-ta="அங்கீகரிக்கப்பட்ட கால்நடை மருத்துவக் களஞ்சியம்">Official Veterinary Clinical Repository</h4>
+        <p style="color: var(--text-secondary); font-size: 0.8rem;" data-lang-en="Verified by registered veterinary surgeons • Merck Veterinary Manual & ICAR reference standards" data-lang-ta="பதிவுசெய்யப்பட்ட கால்நடை மருத்துவர்களால் சரிபார்க்கப்பட்டது • ICAR வழிகாட்டல்கள்">Verified by registered veterinary surgeons • Merck Veterinary Manual & ICAR reference standards</p>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <div style="position: relative; width: 280px;">
+        <input type="text" id="disease-search-input" class="form-control" placeholder="Search disease, symptom, cause..." style="padding-left: 36px;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 12px; color: var(--text-muted);"></i>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" id="btn-search-disease" style="font-weight: 800;">
+        <i class="fa-solid fa-magnifying-glass"></i> <span data-lang-en="Search" data-lang-ta="தேடு">Search</span>
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm" id="btn-reset-search" style="font-weight: 800;">
+        <i class="fa-solid fa-rotate-left"></i> <span data-lang-en="Reset" data-lang-ta="மீட்டமை">Reset</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Disease Detail Modal / Expanded View -->
+<div id="disease-detail-modal" class="card card-gold" style="display: none; border: 2px solid var(--gold); border-top: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(217, 119, 6, 0.2); margin-bottom: 24px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+    <div>
+      <span class="badge-tag badge-gold" id="modal-species-tag">Bovine (Cow, Buffalo)</span>
+      <h3 style="color: var(--text-primary); font-size: 1.45rem; font-weight: 800; margin-top: 6px;" id="modal-disease-title">Disease Name</h3>
+      <div style="font-size: 0.8rem; color: var(--text-muted);" id="modal-meta-line">Reviewed by Dr. S. Kabilan, B.V.Sc & A.H. • Verified on 2026-10-01</div>
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="closeDiseaseModal()" style="font-weight: 800;"><i class="fa-solid fa-xmark"></i> Close</button>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <!-- Column 1 -->
+    <div>
+      <div class="care-section">
+        <h4 class="care-section-title"><i class="fa-solid fa-circle-info" style="color: var(--navy);"></i> Disease Overview</h4>
+        <p style="font-size: 0.88rem; color: var(--text-secondary);" id="modal-description"></p>
+      </div>
+
+      <div class="care-section">
+        <h4 class="care-section-title"><i class="fa-solid fa-dna" style="color: var(--gold);"></i> Causes & Risk Factors</h4>
+        <p style="font-size: 0.86rem; color: var(--text-secondary);" id="modal-causes"></p>
+      </div>
+
+      <div class="care-section">
+        <h4 class="care-section-title"><i class="fa-solid fa-eye" style="color: var(--green);"></i> Visible vs Invisible Signs</h4>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;"><strong>Observable Signs:</strong> <span id="modal-visible-signs"></span></div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);"><strong>Internal / Laboratory Signs:</strong> <span id="modal-invisible-signs"></span></div>
+      </div>
+
+      <div class="care-section">
+        <h4 class="care-section-title"><i class="fa-solid fa-stethoscope" style="color: var(--navy);"></i> Diagnostic Tests for Veterinarian</h4>
+        <p style="font-size: 0.86rem; color: var(--text-secondary);" id="modal-tests"></p>
+      </div>
+    </div>
+
+    <!-- Column 2 -->
+    <div>
+      <div class="care-section" style="background: var(--green-light); padding: 14px; border-radius: 10px; border: 1px solid var(--green-border);">
+        <h4 class="care-section-title" style="color: var(--green-dark);"><i class="fa-solid fa-kit-medical"></i> Safe Immediate First Aid (Farmer Action)</h4>
+        <p style="font-size: 0.86rem; color: #064e3b;" id="modal-first-aid"></p>
+      </div>
+
+      <div class="care-section" style="background: var(--gold-light); padding: 14px; border-radius: 10px; border: 1px solid var(--gold-border); margin-top: 14px;">
+        <h4 class="care-section-title" style="color: var(--gold-dark);"><i class="fa-solid fa-triangle-exclamation"></i> Medicine Safety & Legal Restrictions</h4>
+        <p style="font-size: 0.84rem; color: #78350f;" id="modal-medicine-info"></p>
+      </div>
+
+      <div class="care-section" style="margin-top: 14px;">
+        <h4 class="care-section-title"><i class="fa-solid fa-shield-virus" style="color: var(--navy);"></i> Prevention & Biosecurity</h4>
+        <p style="font-size: 0.86rem; color: var(--text-secondary);" id="modal-prevention"></p>
+      </div>
+
+      <div class="care-section" style="background: var(--red-light); padding: 14px; border-radius: 10px; border: 1px solid var(--red-border); margin-top: 14px;">
+        <h4 class="care-section-title" style="color: var(--red-dark);"><i class="fa-solid fa-truck-medical"></i> Warning Signs Requiring Urgent Veterinary Call</h4>
+        <p style="font-size: 0.85rem; color: #881337;" id="modal-warning-urgency"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Disease Directory Grid -->
+<div id="disease-cards-container" class="grid-cols-2">
+  <div style="padding: 30px; text-align: center; color: var(--text-muted); grid-column: span 2;">
+    <i class="fa-solid fa-spinner fa-spin"></i> Loading veterinary disease entries...
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let allDiseases = [];
+
+async function loadDiseases(query = '') {
+  try {
+    const url = query ? `/api/diseases?q=${encodeURIComponent(query)}` : '/api/diseases';
+    allDiseases = await fetchJSON(url);
+    renderDiseaseCards(allDiseases);
+
+    // If query param 'key' is in URL, open modal automatically
+    const urlParams = new URLSearchParams(window.location.search);
+    const key = urlParams.get('key');
+    if (key) {
+      const match = allDiseases.find(d => d.disease_key === key);
+      if (match) openDiseaseModal(match);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderDiseaseCards(diseases) {
+  const container = document.getElementById('disease-cards-container');
+  if (!diseases || diseases.length === 0) {
+    container.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--text-muted); grid-column: span 2;">No diseases matching your query.</div>';
+    return;
+  }
+
+  const borderThemes = ['card-blue', 'card-red', 'card-gold', 'card-green'];
+
+  container.innerHTML = diseases.map((d, idx) => {
+    const cardClass = borderThemes[idx % borderThemes.length];
+    return `
+    <div class="card ${cardClass}" style="display: flex; flex-direction: column; justify-content: space-between; border-radius: 14px; box-shadow: var(--shadow-subtle);">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+          <span class="badge-tag badge-gold"><i class="fa-solid fa-cow"></i> ${d.species_affected}</span>
+          <span class="badge-tag badge-green" style="font-size: 0.74rem;"><i class="fa-solid fa-circle-check"></i> Verified ${d.last_reviewed}</span>
+        </div>
+
+        <h3 style="color: var(--text-primary); font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; line-height: 1.3;">${d.name}</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.45;">${d.description.slice(0, 150)}...</p>
+
+        <div style="background: #f8fafc; border: 1.5px solid var(--border-color); border-left: 3.5px solid var(--blue-primary); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.82rem;">
+          <strong style="color: var(--blue-dark);"><i class="fa-solid fa-list-check" style="color: var(--blue-primary);"></i> <span data-lang-en="Key Signs:" data-lang-ta="முக்கிய அறிகுறிகள்:">Key Signs:</span></strong>
+          <div style="color: var(--text-secondary); margin-top: 4px; line-height: 1.35;">${d.common_symptoms.slice(0, 110)}...</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 8px;">
+        <button class="btn btn-primary btn-sm" style="width: 100%; justify-content: center; font-weight: 800; padding: 10px;" onclick='openDiseaseModalByKey("${d.disease_key}")'>
+          <i class="fa-solid fa-book-medical"></i> <span data-lang-en="View Clinical Remedial Protocol" data-lang-ta="மருத்துவப் பராமரிப்பு முறையைக் காண்க">View Clinical Remedial Protocol</span>
+        </button>
+      </div>
+    </div>
+  `}).join('');
+}
+
+function openDiseaseModalByKey(key) {
+  const item = allDiseases.find(d => d.disease_key === key);
+  if (item) openDiseaseModal(item);
+}
+
+function openDiseaseModal(d) {
+  document.getElementById('modal-species-tag').innerText = d.species_affected;
+  document.getElementById('modal-disease-title').innerText = d.name;
+  document.getElementById('modal-meta-line').innerText = `Reviewed by ${d.veterinary_reviewer} • Last verified: ${d.last_reviewed} • Reference: ${d.reference_sources}`;
+  document.getElementById('modal-description').innerText = d.description;
+  document.getElementById('modal-causes').innerText = d.causes_risk_factors;
+  document.getElementById('modal-visible-signs').innerText = d.visible_signs;
+  document.getElementById('modal-invisible-signs').innerText = d.invisible_signs;
+  document.getElementById('modal-tests').innerText = d.diagnostic_tests;
+  document.getElementById('modal-first-aid').innerText = d.immediate_first_aid;
+  document.getElementById('modal-medicine-info').innerText = d.medicine_info_restrictions;
+  document.getElementById('modal-prevention').innerText = d.prevention_biosecurity;
+  document.getElementById('modal-warning-urgency').innerText = d.warning_signs_urgency;
+
+  const modal = document.getElementById('disease-detail-modal');
+  modal.style.display = 'block';
+  modal.scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeDiseaseModal() {
+  document.getElementById('disease-detail-modal').style.display = 'none';
+}
+
+document.getElementById('btn-search-disease').addEventListener('click', () => {
+  const q = document.getElementById('disease-search-input').value.trim();
+  loadDiseases(q);
+});
+
+document.getElementById('btn-reset-search').addEventListener('click', () => {
+  document.getElementById('disease-search-input').value = '';
+  loadDiseases();
+});
+
+document.getElementById('disease-search-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    loadDiseases(e.target.value.trim());
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => loadDiseases());
+</script>
+{% endblock %}

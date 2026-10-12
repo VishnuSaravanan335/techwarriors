@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}PashuRaksha AI | SIH26128 Smart Animal Health Platform{% endblock %}
+{% block page_heading %}Smart Animal Health & Disease Prevention System{% endblock %}
+{% block page_subheading %}SIH26128 Solution — AI-Powered Livestock Healthcare with Dual-Mode (IoT & Manual) Monitoring{% endblock %}
+
+{% block content %}
+<div style="max-width: 960px; margin: 0 auto;">
+
+  <!-- Hero Banner -->
+  <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(14, 165, 233, 0.2) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 20px; padding: 40px; margin-bottom: 32px; text-align: center; box-shadow: var(--shadow-card);">
+    <span class="badge-tag badge-sih" style="margin-bottom: 16px;">
+      <i class="fa-solid fa-trophy"></i> Smart India Hackathon 2026 • Problem Statement SIH26128
+    </span>
+    <h1 style="font-size: 2.3rem; font-weight: 800; color: #fff; margin-bottom: 14px; letter-spacing: -0.02em;">
+      PashuRaksha AI (பசு ரக்ஷா)
+    </h1>
+    <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto 28px;">
+      Empowering dairy farmers and veterinarians with early disease detection, collision-resistant unique animal identities, and rapid 1962 emergency assistance.
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      <a href="/dashboard" class="btn btn-primary" style="font-size: 1rem; padding: 12px 28px;">
+        <i class="fa-solid fa-gauge-high"></i> Open Unified Dashboard
+      </a>
+      <a href="/register-animal" class="btn btn-secondary" style="font-size: 1rem; padding: 12px 24px;">
+        <i class="fa-solid fa-plus-circle"></i> Quick Animal Registration
+      </a>
+    </div>
+  </div>
+
+  <!-- Dual Mode Comparison Cards -->
+  <div class="grid-cols-2">
+    <!-- Mode 1 -->
+    <div class="card" style="border-top: 4px solid var(--secondary);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--secondary); font-weight: 700; margin-bottom: 6px;">
+        Mode 1
+      </div>
+      <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 10px;">
+        <i class="fa-solid fa-microchip" style="color: var(--secondary);"></i> IoT Automated Telemetry
+      </h3>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 18px;">
+        Continuous biometric collar & tag telemetry using ESP32/ESP8266. Automatic sensor anomaly alarms, rumination tracking, and temperature thresholds.
+      </p>
+      <ul style="color: var(--text-muted); font-size: 0.84rem; padding-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
+        <li>ESP32 / ESP8266 REST and MQTT transmission</li>
+        <li>Continuous body temperature and heart-rate monitoring</li>
+        <li>Automated anomaly alarms with species baseline comparison</li>
+        <li>Built-in hardware telemetry simulator</li>
+      </ul>
+      <a href="/iot-monitor" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-satellite-dish"></i> Launch IoT Monitor
+      </a>
+    </div>
+
+    <!-- Mode 2 -->
+    <div class="card" style="border-top: 4px solid var(--primary);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--primary); font-weight: 700; margin-bottom: 6px;">
+        Mode 2
+      </div>
+      <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 10px;">
+        <i class="fa-solid fa-notes-medical" style="color: var(--primary);"></i> Manual Health Monitoring
+      </h3>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 18px;">
+        Affordable observation checklist for rural farmers without IoT hardware or reliable internet. Feeds into the same AI disease prediction engine.
+      </p>
+      <ul style="color: var(--text-muted); font-size: 0.84rem; padding-left: 20px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
+        <li>Structured checklist for feeding, posture & symptoms</li>
+        <li>Optional physical vital measurements (temp / pulse)</li>
+        <li>0-100 calibrated disease risk score with explainable factors</li>
+        <li>NADCP vaccination reminders and preventative schedules</li>
+      </ul>
+      <a href="/manual-assessment" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-clipboard-check"></i> Launch Manual Check
+      </a>
+    </div>
+  </div>
+
+  <!-- Key Architecture Pillars -->
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Core Architectural Features</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+      <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 10px;">
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px;">
+          <i class="fa-solid fa-fingerprint" style="color: var(--primary);"></i> Permanent Animal IDs
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-secondary);">
+          Collision-resistant short codes (e.g. COW-1047) linked to farmer mobile. Reusable profiles across herd additions.
+        </p>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 10px;">
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px;">
+          <i class="fa-solid fa-camera" style="color: var(--secondary);"></i> Computer Vision AI
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-secondary);">
+          Photo screening for Lumpy Skin Disease (LSD) dermal nodules and Foot & Mouth (FMD) lesions with quality checks.
+        </p>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 10px;">
+        <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 6px;">
+          <i class="fa-solid fa-truck-medical" style="color: var(--accent-rose);"></i> 1962 Emergency Care
+        </h4>
+        <p style="font-size: 0.8rem; color: var(--text-secondary);">
+          Automated referral to official state/district veterinary dispensaries and verified mobile veterinary clinic helplines.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

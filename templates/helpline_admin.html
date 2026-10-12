@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Helpline Directory Admin | PashuRaksha AI{% endblock %}
+{% block page_heading %}Configurable Helpline & Polyclinic Directory{% endblock %}
+{% block page_subheading %}Administrator interface to add or update state & district verified veterinary helplines without altering code{% endblock %}
+
+{% block content %}
+<div class="grid-cols-2">
+
+  <!-- Add New Helpline Form -->
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-plus-circle" style="color: var(--primary);"></i> Add Official Helpline / Polyclinic</span>
+      <span class="badge-tag" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;">Admin Config</span>
+    </div>
+
+    <form id="add-helpline-form">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label">State / UT *</label>
+          <input type="text" id="hl-state" class="form-control" value="Tamil Nadu" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">District (or All)</label>
+          <input type="text" id="hl-district" class="form-control" value="Coimbatore" required>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label">Helpline Number *</label>
+          <input type="text" id="hl-number" class="form-control" placeholder="e.g. 1962 or 0422-2381900" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Service Type</label>
+          <select id="hl-type" class="form-control">
+            <option value="Mobile Veterinary Unit">Mobile Veterinary Unit</option>
+            <option value="District Polyclinic">District Polyclinic</option>
+            <option value="Emergency Hospital">Emergency Hospital</option>
+            <option value="State Control Room">State Control Room</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Official Service Name *</label>
+        <input type="text" id="hl-name" class="form-control" placeholder="e.g. Mobile Veterinary Unit Office, Town Hall" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label">Operating Hours</label>
+          <input type="text" id="hl-hours" class="form-control" value="24 Hours Emergency" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Official Government Source URL</label>
+          <input type="url" id="hl-source" class="form-control" value="https://dahd.nic.in" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-save"></i> Save Verified Helpline
+      </button>
+    </form>
+  </div>
+
+  <!-- Live List of Configured Helplines -->
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-list-ul" style="color: var(--secondary);"></i> Registered State Helplines</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Service & Location</th>
+            <th>Last Verified</th>
+          </tr>
+        </thead>
+        <tbody id="admin-helplines-table">
+          <tr><td colspan="3" style="text-align: center;">Loading helplines...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadAdminHelplines() {
+  try {
+    const list = await fetchJSON('/api/admin/helplines');
+    const tbody = document.getElementById('admin-helplines-table');
+    tbody.innerHTML = list.map(h => `
+      <tr>
+        <td>
+          <span style="font-family: monospace; font-size: 1.1rem; font-weight: 800; color: var(--primary);">${h.helpline_number}</span>
+        </td>
+        <td>
+          <strong style="color: #fff;">${h.service_name}</strong>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">${h.state} • ${h.district || 'All Districts'}</div>
+        </td>
+        <td>
+          <span style="font-size: 0.78rem; color: var(--text-secondary);">${h.last_verified_date}</span>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.getElementById('add-helpline-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const payload = {
+    state: document.getElementById('hl-state').value,
+    district: document.getElementById('hl-district').value,
+    helpline_number: document.getElementById('hl-number').value,
+    service_type: document.getElementById('hl-type').value,
+    service_name: document.getElementById('hl-name').value,
+    operating_hours: document.getElementById('hl-hours').value,
+    official_source: document.getElementById('hl-source').value
+  };
+
+  try {
+    await fetchJSON('/api/admin/helplines', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    showNotification('Helpline saved successfully!', 'success');
+    this.reset();
+    loadAdminHelplines();
+  } catch (err) {
+    showNotification('Error saving: ' + err.message, 'error');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', loadAdminHelplines);
+</script>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Register Animal | PashuRaksha AI{% endblock %}
+{% block page_heading %}Simple Animal Registration{% endblock %}
+{% block page_subheading %}Zero-hassle registration: enter owner mobile once, auto-generate collision-resistant unique animal code{% endblock %}
+
+{% block content %}
+<div style="max-width: 820px; margin: 0 auto;">
+  
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-id-card" style="color: var(--primary);"></i> One-Click Animal Registration</span>
+      <span class="badge-tag badge-sih">Farmer-Friendly Fast UI</span>
+    </div>
+
+    <form id="register-animal-form">
+      <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 18px; margin-bottom: 24px;">
+        <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-user-shield" style="color: var(--primary);"></i> 1. Owner Information (Saved for Herd Profile)
+        </h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Owner Name *</label>
+            <input type="text" id="owner-name" class="form-control" value="Murugan R." placeholder="e.g. Murugan R." required>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Farmer Mobile Number *</label>
+            <input type="tel" id="mobile-number" class="form-control" value="9842154321" placeholder="10-digit mobile number" required>
+            <div class="form-hint">Enables fast OTP verification / SMS alert notification</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">State</label>
+            <select id="state-select" class="form-control">
+              <option value="Tamil Nadu" selected>Tamil Nadu</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">District (For Emergency 1962 Routing)</label>
+            <select id="district-select" class="form-control">
+              <option value="Coimbatore" selected>Coimbatore</option>
+              <option value="Dindigul">Dindigul</option>
+              <option value="Tiruppur">Tiruppur</option>
+              <option value="Erode">Erode</option>
+              <option value="Salem">Salem</option>
+              <option value="Madurai">Madurai</option>
+              <option value="Chennai">Chennai</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-cow" style="color: var(--secondary);"></i> 2. Animal Details
+      </h4>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">Animal Type / Species *</label>
+          <select id="species-select" class="form-control" required>
+            <option value="Cow" selected>Cow (பசு)</option>
+            <option value="Buffalo">Buffalo (எருமை)</option>
+            <option value="Goat">Goat (ஆடு)</option>
+            <option value="Sheep">Sheep (செம்மறி ஆடு)</option>
+            <option value="Dog">Dog</option>
+            <option value="Cat">Cat</option>
+            <option value="Other">Other Livestock</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Animal Name (Optional)</label>
+          <input type="text" id="animal-name" class="form-control" placeholder="e.g. Lakshmi, Ponni, Kaveri">
+          <div class="form-hint">Helps dairy workers easily recognize the animal</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label">Breed (Optional)</label>
+          <input type="text" id="breed" class="form-control" placeholder="e.g. Kangayam, Gir, Jersey Cross, Murrah">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Age (Years)</label>
+          <input type="number" step="0.5" id="age-years" class="form-control" value="3.5" min="0.1" max="25">
+        </div>
+      </div>
+
+      <div class="form-group" style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 12px; padding: 14px;">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+          <input type="checkbox" id="iot-toggle" style="width: 18px; height: 18px; accent-color: var(--secondary);" checked>
+          <span style="font-weight: 600; color: #fff;">Enable IoT Telemetry Tracking for this animal</span>
+        </label>
+        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-left: 28px; margin-top: 4px;">
+          Automatically generates an ESP32 collar tag binding and initializes real-time vitals simulator.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+        <button type="reset" class="btn btn-secondary">Reset</button>
+        <button type="submit" class="btn btn-primary" id="btn-submit-reg">
+          <i class="fa-solid fa-sparkles"></i> Register & Generate Animal ID
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Registration Success Modal / Banner -->
+  <div id="registration-result-box" style="display: none; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%); border: 2px solid var(--primary); border-radius: 16px; padding: 24px; margin-top: 24px; text-align: center;">
+    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 28px; color: #fff; margin: 0 auto 14px;">
+      <i class="fa-solid fa-check"></i>
+    </div>
+    <h3 style="color: #fff; font-size: 1.4rem; margin-bottom: 6px;">Animal Successfully Registered!</h3>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px;">A permanent, collision-resistant identification code has been assigned to this animal.</p>
+    
+    <div style="display: inline-block; background: var(--bg-card); border: 2px dashed var(--primary); border-radius: 12px; padding: 14px 28px; margin-bottom: 20px;">
+      <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Generated Animal ID</div>
+      <div id="new-animal-code" style="font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: 0.05em;">COW-0000</div>
+      <div id="new-animal-name" style="font-size: 0.95rem; color: #fff; font-weight: 600;">Animal Name</div>
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 12px;">
+      <a href="/dashboard" class="btn btn-secondary"><i class="fa-solid fa-house"></i> Go to Dashboard</a>
+      <a href="/manual-assessment" class="btn btn-primary" id="link-start-assessment"><i class="fa-solid fa-notes-medical"></i> Start Health Check</a>
+      <button class="btn btn-secondary" onclick="window.location.reload()"><i class="fa-solid fa-plus"></i> Add Another Animal</button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('register-animal-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-submit-reg');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering...';
+
+  const payload = {
+    owner_name: document.getElementById('owner-name').value,
+    mobile: document.getElementById('mobile-number').value,
+    state: document.getElementById('state-select').value,
+    district: document.getElementById('district-select').value,
+    species: document.getElementById('species-select').value,
+    animal_name: document.getElementById('animal-name').value,
+    breed: document.getElementById('breed').value,
+    age_years: document.getElementById('age-years').value,
+    iot_enabled: document.getElementById('iot-toggle').checked
+  };
+
+  try {
+    const res = await fetchJSON('/api/animals/register', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    showNotification(res.message, 'success');
+    document.getElementById('register-animal-form').style.display = 'none';
+    
+    document.getElementById('new-animal-code').innerText = res.animal_code;
+    document.getElementById('new-animal-name').innerText = (res.animal_name ? res.animal_name + ' • ' : '') + res.species;
+    document.getElementById('link-start-assessment').href = `/manual-assessment?animal_id=${res.animal_id}`;
+    document.getElementById('registration-result-box').style.display = 'block';
+
+  } catch (err) {
+    showNotification('Registration failed: ' + err.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-sparkles"></i> Register & Generate Animal ID';
+  }
+});
+</script>
+{% endblock %}

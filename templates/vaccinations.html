@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Vaccination Calendar & Preventative Schedule | PashuRaksha AI{% endblock %}
+{% block page_heading %}<span data-lang-en="Vaccination & Preventative Care Calendar" data-lang-ta="தடுப்பூசி மற்றும் தடுப்புப் பராமரிப்பு அட்டவணை">Vaccination & Preventative Care Calendar</span>{% endblock %}
+{% block page_subheading %}<span data-lang-en="NADCP bi-annual vaccination tracking, pre-monsoon disease prevention, and veterinary booster schedules" data-lang-ta="கால்நடை நோய்த்தடுப்பு திட்டம் (NADCP), பருவமழைக்கு முந்தைய தடுப்பூசிகள் மற்றும் நினைவூட்டல்">NADCP bi-annual vaccination tracking, pre-monsoon disease prevention, and veterinary booster schedules</span>{% endblock %}
+
+{% block content %}
+<div class="grid-cols-2">
+
+  <!-- Add New Vaccination Schedule Form -->
+  <div class="card card-blue">
+    <div class="card-title">
+      <span><i class="fa-solid fa-syringe" style="color: var(--blue-primary);"></i> <span data-lang-en="Schedule New Vaccination" data-lang-ta="புதிய தடுப்பூசியைப் பதிவு செய்க">Schedule New Vaccination</span></span>
+      <span class="badge-tag" style="background: #ecfdf5; color: #065f46; border: 1.5px solid #a7f3d0;" data-lang-en="Preventative Protection" data-lang-ta="தடுப்புப் பாதுகாப்பு">Preventative Protection</span>
+    </div>
+
+    <form id="add-vaccine-form">
+      <div class="form-group">
+        <label class="form-label" data-lang-en="Select Herd Animal *" data-lang-ta="கால்நடையைத் தேர்ந்தெடுக்கவும் *">Select Herd Animal *</label>
+        <select id="vax-animal-id" class="form-control" required>
+          <option value="">Loading animals...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" data-lang-en="Vaccine / Target Disease *" data-lang-ta="தடுப்பூசி / இலக்கு நோய் *">Vaccine / Target Disease *</label>
+        <select id="vax-name" class="form-control" required>
+          <option value="FMD (Foot and Mouth Disease) Bi-Annual Booster">FMD (Foot & Mouth Disease / கோமாரி நோய்)</option>
+          <option value="HS (Hemorrhagic Septicemia) Monsoon Booster">HS (Hemorrhagic Septicemia / தொண்டை அடைப்பான்)</option>
+          <option value="BQ (Black Quarter) Annual Booster">BQ (Black Quarter / சப்பை நோய்)</option>
+          <option value="Brucellosis S99 Prophylactic Dose">Brucellosis (புருசெல்லோசிஸ் / கருச்சிதைவு நோய்)</option>
+          <option value="Anthrax Spore Vaccine">Anthrax (அடைப்பான் நோய்)</option>
+          <option value="Enterotoxemia (ET) Sheep/Goat Vaccine">Enterotoxemia (துள்ளு நோய் - ஆடுகள்)</option>
+        </select>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div class="form-group">
+          <label class="form-label" data-lang-en="Scheduled Date *" data-lang-ta="நிர்ணயிக்கப்பட்ட தேதி *">Scheduled Date *</label>
+          <input type="date" id="vax-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-lang-en="Clinical Notes" data-lang-ta="மருத்துவக் குறிப்புகள்">Clinical Notes</label>
+          <input type="text" id="vax-notes" class="form-control" placeholder="e.g. NADCP cycle round 2">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btn-add-vaccine" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-plus-circle"></i> <span data-lang-en="Add Vaccination to Schedule" data-lang-ta="அட்டவணையில் சேர்க்க">Add Vaccination to Schedule</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Standard Recommended Schedule Card -->
+  <div class="card card-green" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);">
+    <div class="card-title">
+      <span><i class="fa-solid fa-calendar-check" style="color: var(--green-dark);"></i> <span data-lang-en="National Vaccination Calendar (NADCP)" data-lang-ta="தேசிய தடுப்பூசி வழிகாட்டுதல்">National Vaccination Calendar (NADCP)</span></span>
+    </div>
+    <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #ffffff; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 12px;">
+        <strong style="color: var(--blue-dark);"><i class="fa-solid fa-shield-virus" style="color: var(--blue-primary);"></i> Foot & Mouth Disease (FMD / கோமாரி):</strong>
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 3px;">Given every 6 months (May-June & Nov-Dec) under National Control Programme.</div>
+      </div>
+      <div style="background: #ffffff; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 12px;">
+        <strong style="color: var(--green-dark);"><i class="fa-solid fa-cloud-showers-heavy" style="color: var(--green-primary);"></i> Hemorrhagic Septicemia (HS / தொண்டை அடைப்பான்):</strong>
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 3px;">Administered annually before monsoon rains start (May-June).</div>
+      </div>
+      <div style="background: #ffffff; border: 1.5px solid #fde68a; border-radius: 8px; padding: 12px;">
+        <strong style="color: var(--gold);"><i class="fa-solid fa-cow"></i> Black Quarter (BQ / சப்பை நோய்):</strong>
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 3px;">Annual pre-monsoon vaccination in calves and cattle between 6 months and 3 years.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Active Vaccinations Table with Delete Action -->
+<div class="card card-blue">
+  <div class="card-title">
+    <span><i class="fa-solid fa-list-check" style="color: var(--blue-primary);"></i> <span data-lang-en="Herd Preventative Vaccination Log" data-lang-ta="பதிவு செய்யப்பட்ட தடுப்பூசி விவரங்கள்">Herd Preventative Vaccination Log</span></span>
+    <span class="badge-tag badge-sih" id="vax-count-badge">Loading...</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th data-lang-en="Animal ID" data-lang-ta="கால்நடை எண்">Animal ID</th>
+          <th data-lang-en="Vaccine / Target Disease" data-lang-ta="தடுப்பூசி பெயர்">Vaccine / Target Disease</th>
+          <th data-lang-en="Due Date" data-lang-ta="தவணை தேதி">Due Date</th>
+          <th data-lang-en="Status" data-lang-ta="நிலை">Status</th>
+          <th data-lang-en="Veterinary Clinical Notes" data-lang-ta="மருத்துவக் குறிப்புகள்">Veterinary Clinical Notes</th>
+          <th data-lang-en="Action" data-lang-ta="செயல்">Action</th>
+        </tr>
+      </thead>
+      <tbody id="vax-table-body">
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 25px;">Loading vaccination schedule...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadVaccinationsPage() {
+  // Set default date to 30 days ahead
+  const d = new Date();
+  d.setDate(d.getDate() + 30);
+  document.getElementById('vax-date').value = d.toISOString().split('T')[0];
+
+  // Load animals into select dropdown
+  try {
+    const animals = await fetchJSON('/api/animals');
+    const select = document.getElementById('vax-animal-id');
+    select.innerHTML = '<option value="">-- Choose Animal --</option>' + animals.map(a => `
+      <option value="${a.id}">
+        ${a.animal_code} - ${a.animal_name || 'Unnamed'} (${a.species})
+      </option>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+  }
+
+  loadVaccinationsTable();
+}
+
+async function loadVaccinationsTable() {
+  try {
+    const vaxes = await fetchJSON('/api/vaccinations');
+    const tbody = document.getElementById('vax-table-body');
+    const scheduledCount = vaxes.filter(v => v.status !== 'Completed').length;
+    const completedCount = vaxes.filter(v => v.status === 'Completed').length;
+    
+    document.getElementById('vax-count-badge').innerHTML = `
+      <i class="fa-solid fa-clock"></i> ${scheduledCount} <span data-lang-en="Scheduled" data-lang-ta="அட்டவணையில்">Scheduled</span> &nbsp;•&nbsp; 
+      <i class="fa-solid fa-circle-check" style="color: var(--green-dark);"></i> ${completedCount} <span data-lang-en="Completed" data-lang-ta="முடிந்தது">Completed</span>
+    `;
+
+    if (vaxes && vaxes.length > 0) {
+      tbody.innerHTML = vaxes.map(v => {
+        const isCompleted = v.status === 'Completed';
+        const escapedName = (v.vaccine_name || '').replace(/'/g, "\\'");
+        
+        return `
+        <tr style="${isCompleted ? 'background-color: #f0fdf4;' : ''}">
+          <td>
+            <span class="animal-code-tag">${v.animal_code}</span>
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600; margin-top: 3px;">${v.animal_name || v.species}</div>
+          </td>
+          <td>
+            <strong style="color: var(--text-primary); font-size: 0.94rem;">${v.vaccine_name}</strong>
+          </td>
+          <td>
+            <div style="font-weight: 800; color: ${isCompleted ? 'var(--text-muted)' : 'var(--gold-dark)'};">
+              <i class="fa-regular fa-calendar"></i> ${v.scheduled_date}
+            </div>
+            ${isCompleted && v.administered_date ? `
+              <div style="font-size: 0.75rem; color: var(--green-dark); font-weight: 700; margin-top: 2px;">
+                <i class="fa-solid fa-check"></i> Given: ${v.administered_date}
+              </div>
+            ` : ''}
+          </td>
+          <td>
+            ${isCompleted ? `
+              <span class="badge-tag" style="background: #ecfdf5; color: #065f46; border: 1.5px solid #10b981; font-weight: 800;">
+                <i class="fa-solid fa-circle-check"></i> <span data-lang-en="Completed" data-lang-ta="முடிந்தது">Completed</span>
+              </span>
+            ` : `
+              <span class="badge-tag" style="background: #fef3c7; color: #92400e; border: 1.5px solid #fde68a; font-weight: 800;">
+                <i class="fa-solid fa-clock"></i> <span data-lang-en="Scheduled" data-lang-ta="அட்டவணையில்">Scheduled</span>
+              </span>
+            `}
+          </td>
+          <td style="font-size: 0.85rem; color: var(--text-secondary);">${v.veterinarian_notes || 'Routine preventative cycle'}</td>
+          <td>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              ${!isCompleted ? `
+                <button type="button" class="btn btn-primary btn-sm" onclick="confirmVaccinationCompleted(${v.id}, '${escapedName}')" title="Confirm and record as completed" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); border: 1.5px solid #059669; color: #ffffff; font-weight: 800; padding: 6px 12px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);">
+                  <i class="fa-solid fa-circle-check"></i> <span data-lang-en="Confirm Done" data-lang-ta="முடிந்தது என உறுதிசெய்">Confirm Done</span>
+                </button>
+              ` : `
+                <span class="badge-tag" style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; font-size: 0.8rem; font-weight: 800; padding: 5px 10px;">
+                  <i class="fa-solid fa-circle-check"></i> <span data-lang-en="Recorded" data-lang-ta="பதிவு செய்யப்பட்டது">Recorded</span>
+                </span>
+              `}
+              <button type="button" class="btn btn-secondary btn-sm" onclick="deleteVaccination(${v.id})" title="Remove from schedule" style="color: var(--red); border: 1.5px solid var(--red-border); font-weight: 800; padding: 6px 12px; background: #ffffff;">
+                <i class="fa-solid fa-trash-can"></i> <span data-lang-en="Remove" data-lang-ta="நீக்கு">Remove</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `}).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px; color: var(--text-muted);">No vaccination records scheduled. Add one using the form above.</td></tr>';
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Confirm vaccination as administered and completed
+async function confirmVaccinationCompleted(id, vacName) {
+  if (!confirm(`Confirm that "${vacName || 'Vaccination'}" has been administered and record as COMPLETED?`)) return;
+  try {
+    const res = await fetchJSON(`/api/vaccinations/${id}/complete`, { method: 'POST' });
+    showNotification(res.message || 'Vaccination recorded as completed!', 'success');
+    loadVaccinationsTable();
+  } catch (err) {
+    showNotification('Error updating vaccination: ' + err.message, 'error');
+  }
+}
+
+// Add vaccination
+document.getElementById('add-vaccine-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const animalId = document.getElementById('vax-animal-id').value;
+  const name = document.getElementById('vax-name').value;
+  const date = document.getElementById('vax-date').value;
+  const notes = document.getElementById('vax-notes').value;
+
+  if (!animalId || !name || !date) {
+    showNotification('Please fill in animal, vaccine, and scheduled date', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-add-vaccine');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scheduling...';
+
+  try {
+    const res = await fetchJSON('/api/vaccinations', {
+      method: 'POST',
+      body: JSON.stringify({
+        animal_id: parseInt(animalId),
+        vaccine_name: name,
+        scheduled_date: date,
+        notes: notes
+      })
+    });
+
+    showNotification(res.message, 'success');
+    this.reset();
+    loadVaccinationsPage();
+  } catch (err) {
+    showNotification('Failed to add vaccine: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add Vaccination to Schedule';
+  }
+});
+
+// Delete vaccination
+async function deleteVaccination(id) {
+  if (!confirm('Are you sure you want to remove this vaccination record?')) return;
+  try {
+    const res = await fetchJSON(`/api/vaccinations/${id}`, { method: 'DELETE' });
+    showNotification(res.message, 'success');
+    loadVaccinationsTable();
+  } catch (err) {
+    showNotification('Error removing vaccine: ' + err.message, 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadVaccinationsPage);
+</script>
+{% endblock %}

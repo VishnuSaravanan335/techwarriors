@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Animal Care Plans & Recovery Tracking | PashuRaksha AI{% endblock %}
+{% block page_heading %}Personalized Livestock Care Plans & Recovery Tracking{% endblock %}
+{% block page_subheading %}Historical record of generated supportive care plans, follow-up questionnaires, and veterinary evaluation logs{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="fa-solid fa-heart-pulse" style="color: var(--green);"></i> Generated Personalized Care Plans</span>
+    <span class="badge-tag badge-gold">Veterinary-Aligned Protocols</span>
+  </div>
+
+  <div id="care-plans-list" style="display: flex; flex-direction: column; gap: 16px;">
+    <div style="padding: 25px; text-align: center; color: var(--text-muted);">
+      <i class="fa-solid fa-spinner fa-spin"></i> Loading care plans...
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadCarePlans() {
+  try {
+    const plans = await fetchJSON('/api/care-plans');
+    const container = document.getElementById('care-plans-list');
+
+    if (!plans || plans.length === 0) {
+      container.innerHTML = '<div style="padding: 25px; text-align: center; color: var(--text-muted);">No care plans generated yet. Complete an AI Photo Screening or Manual Health Assessment to generate a personalized care plan.</div>';
+      return;
+    }
+
+    container.innerHTML = plans.map(p => `
+      <div class="care-plan-box" style="margin-top: 0;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="animal-code-tag">${p.animal_code}</span>
+              <h4 style="color: var(--navy); font-size: 1.1rem; font-weight: 800; margin: 0;">${p.plan_title}</h4>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Generated on: ${p.created_at} • BCS: ${p.body_condition_score || 'Not specified'}</div>
+          </div>
+          <div>
+            ${getRiskBadge(p.overall_risk_level)}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+          <div style="background: var(--silver-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: var(--navy); margin-bottom: 4px;">
+              <i class="fa-solid fa-binoculars"></i> Observable Findings:
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4;">${p.observable_findings}</div>
+          </div>
+
+          <div style="background: var(--green-light); border: 1px solid var(--green-border); border-radius: 8px; padding: 12px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: var(--green-dark); margin-bottom: 4px;">
+              <i class="fa-solid fa-shield-halved"></i> Safe Immediate Care:
+            </div>
+            <div style="font-size: 0.82rem; color: #064e3b; line-height: 1.4; white-space: pre-line;">${p.immediate_safe_care}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+          <span style="color: var(--gold-dark); font-weight: 700;">
+            <i class="fa-solid fa-clock"></i> Urgency: ${p.veterinary_urgency}
+          </span>
+          <span style="color: var(--red-dark); font-weight: 700;">
+            <i class="fa-solid fa-triangle-exclamation"></i> Escalation: ${p.escalation_triggers}
+          </span>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadCarePlans);
+</script>
+{% endblock %}

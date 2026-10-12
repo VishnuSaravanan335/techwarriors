@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts & Notifications | PashuRaksha AI{% endblock %}
+{% block page_heading %}Health Alerts & Incident Audit{% endblock %}
+{% block page_subheading %}Review abnormal sensor readings, concerning manual observations, and take preventative actions{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <span><i class="fa-solid fa-bell" style="color: var(--accent-rose);"></i> Active & Resolved Health Alerts</span>
+    <span class="badge-tag badge-emergency" id="alert-counter-badge">1 Unresolved</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Animal ID</th>
+          <th>Source Mode</th>
+          <th>Alert Title & Symptoms</th>
+          <th>Risk Level</th>
+          <th>Recommended Next Step</th>
+          <th>Status & Action</th>
+        </tr>
+      </thead>
+      <tbody id="alerts-table-body">
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 25px;">Loading alert stream...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function loadAlerts() {
+  try {
+    const alerts = await fetchJSON('/api/alerts');
+    const tbody = document.getElementById('alerts-table-body');
+    let unresolvedCount = 0;
+
+    if (alerts && alerts.length > 0) {
+      tbody.innerHTML = alerts.map(al => {
+        if (!al.is_resolved) unresolvedCount++;
+        return `
+          <tr>
+            <td>
+              <span class="animal-code-tag">${al.animal_code}</span>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">${al.animal_name || al.species}</div>
+            </td>
+            <td>
+              <span class="badge-tag" style="background: rgba(255,255,255,0.05); color: #fff;">
+                ${al.source_mode === 'iot_sensor' ? '<i class="fa-solid fa-microchip"></i> IoT Sensor' : 
+                  (al.source_mode === 'ai_vision' ? '<i class="fa-solid fa-camera"></i> Photo AI' : '<i class="fa-solid fa-notes-medical"></i> Manual Check')}
+              </span>
+            </td>
+            <td>
+              <strong style="color: #fff;">${al.alert_title}</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${al.reason}</div>
+            </td>
+            <td>
+              ${getRiskBadge(al.risk_level)}
+            </td>
+            <td>
+              <div style="font-size: 0.82rem; color: var(--text-secondary); max-width: 320px;">
+                ${al.recommended_action}
+              </div>
+            </td>
+            <td>
+              ${al.is_resolved ? 
+                `<span style="color: var(--primary); font-size: 0.82rem; font-weight: 600;"><i class="fa-solid fa-check"></i> Resolved</span>` : 
+                `<button class="btn btn-secondary btn-sm" onclick="resolveAlert(${al.id})"><i class="fa-solid fa-check"></i> Mark Resolved</button>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px;">No alerts reported. All animals healthy.</td></tr>';
+    }
+
+    document.getElementById('alert-counter-badge').innerText = `${unresolvedCount} Unresolved`;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function resolveAlert(alertId) {
+  try {
+    await fetchJSON(`/api/alerts/${alertId}/resolve`, { method: 'POST' });
+    showNotification('Alert marked as resolved', 'success');
+    loadAlerts();
+  } catch (err) {
+    showNotification('Failed to resolve alert: ' + err.message, 'error');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadAlerts);
+</script>
+{% endblock %}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Smart Animal Health & Disease Prevention | SIH26128{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+  <!-- Mobile Overlay Backdrop -->
+  <div class="sidebar-overlay" id="mobile-overlay" onclick="closeSidebarMobile()"></div>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="app-sidebar">
+    <div class="brand-section">
+      <div class="brand-logo-icon">
+        <i class="fa-solid fa-cow"></i>
+      </div>
+      <div style="flex: 1;">
+        <div class="brand-title">PashuRaksha AI</div>
+        <div class="brand-sub">SIH26128 • Animal Health</div>
+      </div>
+      <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()" style="display: none; padding: 4px;" id="sidebar-close-btn">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="/dashboard" class="nav-item {% if request.path == '/dashboard' or request.path == '/' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
+        <span data-lang-en="Dashboard" data-lang-ta="முகப்பு பலகை">Dashboard</span>
+      </a>
+      <a href="/register-animal" class="nav-item {% if request.path == '/register-animal' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-plus-circle"></i></span>
+        <span data-lang-en="Register Animal" data-lang-ta="கால்நடை பதிவு">Register Animal</span>
+      </a>
+      <a href="/iot-monitor" class="nav-item {% if request.path == '/iot-monitor' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-microchip"></i></span>
+        <span data-lang-en="Mode 1: IoT Monitor" data-lang-ta="முறை 1: சென்சார் கண்காணிப்பு">Mode 1: IoT Monitor</span>
+      </a>
+      <a href="/manual-assessment" class="nav-item {% if request.path == '/manual-assessment' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-notes-medical"></i></span>
+        <span data-lang-en="Mode 2: Manual Check" data-lang-ta="முறை 2: நேரடி அறிகுறி ஆய்வு">Mode 2: Manual Check</span>
+      </a>
+      <a href="/photo-screening" class="nav-item {% if request.path == '/photo-screening' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-camera"></i></span>
+        <span data-lang-en="AI Photo Screening" data-lang-ta="AI புகைப்பட ஆய்வு">AI Photo Screening</span>
+      </a>
+      <a href="/disease-library" class="nav-item {% if request.path == '/disease-library' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-book-medical"></i></span>
+        <span data-lang-en="Disease Library" data-lang-ta="நோய் & மருந்து நூலகம்">Disease Library</span>
+      </a>
+      <a href="/care-plans" class="nav-item {% if request.path == '/care-plans' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+        <span data-lang-en="Care Plans" data-lang-ta="பராமரிப்புத் திட்டங்கள்">Care Plans</span>
+      </a>
+      <a href="/alerts" class="nav-item {% if request.path == '/alerts' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-bell"></i></span>
+        <span data-lang-en="Health Alerts" data-lang-ta="சுகாதார எச்சரிக்கைகள்">Health Alerts</span>
+      </a>
+      <a href="/emergency-vet" class="nav-item {% if request.path == '/emergency-vet' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-truck-medical"></i></span>
+        <span data-lang-en="Emergency Vet (1962)" data-lang-ta="அவசர சிகிச்சை (1962)">Emergency Vet (1962)</span>
+      </a>
+      <a href="/vaccinations" class="nav-item {% if request.path == '/vaccinations' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-syringe"></i></span>
+        <span data-lang-en="Vaccine Schedule" data-lang-ta="தடுப்பூசி அட்டவணை">Vaccine Schedule</span>
+      </a>
+      <a href="/helpline-admin" class="nav-item {% if request.path == '/helpline-admin' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-phone-volume"></i></span>
+        <span data-lang-en="Helpline Directory" data-lang-ta="அரசு உதவி எண்கள்">Helpline Directory</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile-badge">
+        <div class="avatar-circle">M</div>
+        <div class="user-info-text">
+          <h4 id="sidebar-user-name">Murugan R.</h4>
+          <p id="sidebar-user-role" data-lang-en="Farmer • Coimbatore, TN" data-lang-ta="விவசாயி • கோயம்புத்தூர்">Farmer • Coimbatore, TN</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main View Area -->
+  <div class="main-wrapper">
+    <header class="top-navbar">
+      <div class="top-nav-left">
+        <button class="nav-hamburger-btn" onclick="toggleSidebarUniversal()" title="Toggle Navigation Menu" aria-label="Toggle Navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="page-title">
+          <h2>{% block page_heading %}Livestock Health Dashboard{% endblock %}</h2>
+          <p>{% block page_subheading %}AI-Powered Dual-Mode Animal Disease Prevention System{% endblock %}</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Tamil / English Language Switcher Button -->
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-lang-toggle" onclick="toggleLanguage()" style="font-weight: 800; border: 1.5px solid var(--blue-primary); color: var(--blue-dark); padding: 6px 12px;">
+          <i class="fa-solid fa-language" style="font-size: 1.1rem; color: var(--green-dark);"></i>
+          <span id="current-lang-text">தமிழ் (Tamil)</span>
+        </button>
+
+        <span class="badge-tag badge-sih"><i class="fa-solid fa-award"></i> SIH26128</span>
+        <a href="/emergency-vet" class="badge-tag badge-emergency">
+          <i class="fa-solid fa-phone-volume"></i> 1962
+        </a>
+      </div>
+    </header>
+
+    <main class="content-body">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    function toggleSidebarUniversal() {
+      const sidebar = document.getElementById('app-sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        const isOpen = sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('active', isOpen);
+      } else {
+        // Desktop collapse toggle
+        document.body.classList.toggle('sidebar-collapsed');
+      }
+    }
+
+    function closeSidebarMobile() {
+      const sidebar = document.getElementById('app-sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+      if (sidebar) sidebar.classList.remove('mobile-open');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    // Compatibility alias
+    window.toggleMobileSidebar = toggleSidebarUniversal;
+
+    // Auto close sidebar on mobile when navigating links
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.nav-menu .nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            closeSidebarMobile();
+          }
+        });
+      });
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

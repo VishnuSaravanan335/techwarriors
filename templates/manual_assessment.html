@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+
+{% block title %}Mode 2: Manual Health Assessment | PashuRaksha AI{% endblock %}
+{% block page_heading %}Mode 2: Manual Health Monitoring{% endblock %}
+{% block page_subheading %}Affordable checklist for farmers without IoT sensors. Feeds into unified AI disease prediction.{% endblock %}
+
+{% block content %}
+<div class="grid-cols-2">
+
+  <!-- Left Column: Form -->
+  <div>
+    <div class="card">
+      <div class="card-title">
+        <span><i class="fa-solid fa-notes-medical" style="color: var(--primary);"></i> Health Observation Checklist</span>
+        <span class="badge-tag" style="background: var(--accent-amber-light); color: var(--accent-amber);">Mode 2: Manual</span>
+      </div>
+
+      <form id="manual-assessment-form">
+        <!-- 1. Select Animal -->
+        <div class="form-group">
+          <label class="form-label">Select Registered Animal *</label>
+          <select id="assessment-animal-id" class="form-control" required>
+            <option value="">Loading animals...</option>
+          </select>
+          <div class="form-hint" id="selected-animal-meta">Select animal to view reference vitals & history</div>
+        </div>
+
+        <!-- 2. Vitals (Optional) -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+          <h4 style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-temperature-half" style="color: var(--secondary);"></i> Optional Physical Measurements
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Body Temp (°C) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+              <input type="number" step="0.1" id="vital-temp" class="form-control" placeholder="e.g. 38.6">
+              <div class="form-hint" id="hint-temp-range">Normal: 38.0 - 39.3°C</div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Heart Rate (bpm) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+              <input type="number" step="1" id="vital-hr" class="form-control" placeholder="e.g. 70">
+              <div class="form-hint" id="hint-hr-range">Normal: 48 - 84 bpm</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Feeding & Activity Status -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+          <div class="form-group">
+            <label class="form-label">Feeding & Appetite *</label>
+            <select id="feeding-status" class="form-control" required>
+              <option value="Normal Appetite" selected>Normal Appetite (வழக்கமான தீவனம்)</option>
+              <option value="Reduced Feeding">Reduced Feeding (தீவனம் குறைந்துள்ளது)</option>
+              <option value="Refusing Food (Anorexia)">Refusing Food / Off-Feed (தீவனம் உண்ணவில்லை)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Activity & Posture *</label>
+            <select id="activity-status" class="form-control" required>
+              <option value="Normal Active" selected>Normal Active & Alert</option>
+              <option value="Dull / Lethargic">Dull / Lethargic (சோர்வாக உள்ளது)</option>
+              <option value="Restless / Agitated">Restless / Shivering (நடுக்கம் / அமைதியின்மை)</option>
+              <option value="Downer (Unable to rise)">Downer (படுத்துள்ளது / எழ முடியவில்லை)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Observed Symptoms Checklist with Real Voice Recognition Assistant -->
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label class="form-label" style="margin-bottom: 0;">Observed Symptoms (Check all that apply)</label>
+            <button type="button" class="btn-voice-mic" id="btn-voice-assistant" title="Click to speak observed symptoms (English or Tamil)">
+              <i class="fa-solid fa-microphone"></i>
+              <span id="voice-assistant-label">Voice Assistant</span>
+            </button>
+          </div>
+          <div id="voice-transcript-banner" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 0.8rem; color: #065f46;">
+            <i class="fa-solid fa-waveform-lines"></i> <span id="voice-transcript-text">Listening...</span>
+          </div>
+          <div class="checkbox-grid" id="symptoms-checklist-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="form-group">
+          <label class="form-label">Additional Observations / Notes</label>
+          <textarea id="assessment-notes" rows="2" class="form-control" placeholder="e.g., Started showing signs yesterday evening; water intake dropped..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-run-assessment" style="width: 100%; justify-content: center; padding: 12px;">
+          <i class="fa-solid fa-brain"></i> Submit for AI Disease-Risk Analysis
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right Column: AI Analysis Result Display -->
+  <div>
+    <!-- Initial Placeholder State -->
+    <div id="ai-result-placeholder" class="card" style="text-align: center; padding: 60px 30px;">
+      <div style="font-size: 48px; color: var(--border-light); margin-bottom: 16px;">
+        <i class="fa-solid fa-microscope"></i>
+      </div>
+      <h3 style="color: var(--text-primary); margin-bottom: 8px;">AI Risk Engine Ready</h3>
+      <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto; font-size: 0.88rem;">
+        Fill in observed symptoms or vital readings and click "Submit" to view a real-time risk classification, disease associations, explainable reasons, and veterinary recommendations.
+      </p>
+    </div>
+
+    <!-- Active Result Box -->
+    <div id="ai-result-box" class="card" style="display: none; border-width: 2px;">
+      <div class="card-title">
+        <span><i class="fa-solid fa-chart-pie" style="color: var(--secondary);"></i> AI Disease-Risk Assessment</span>
+        <span id="result-risk-badge"></span>
+      </div>
+
+      <!-- Score Bar -->
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">Calibrated Disease Risk Score</span>
+          <span id="result-score-number" style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">0 / 100</span>
+        </div>
+        <div style="background: #e2e8f0; height: 10px; border-radius: 999px; overflow: hidden;">
+          <div id="result-score-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.8s ease;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
+          <span>0 (Healthy Baseline)</span>
+          <span>35 (Moderate)</span>
+          <span>65+ (High Risk)</span>
+          <span>100</span>
+        </div>
+      </div>
+
+      <!-- Suspected Conditions -->
+      <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 18px;">
+        <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px;">
+          Suspected Disease Associations / Findings
+        </div>
+        <div id="result-suspected-conditions" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
+          Healthy Baseline
+        </div>
+      </div>
+
+      <!-- Explainability Breakdown -->
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-list-check" style="color: var(--secondary);"></i> Explainable Risk Factors
+        </h4>
+        <ul id="result-reasons-list" style="padding-left: 20px; font-size: 0.86rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 8px;">
+        </ul>
+      </div>
+
+      <!-- Recommendation & Urgency -->
+      <div id="result-action-box" style="border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <h4 id="result-urgency-title" style="font-size: 0.92rem; font-weight: 700; margin-bottom: 6px;">Recommended Action</h4>
+        <p id="result-rec-text" style="font-size: 0.85rem; color: var(--text-secondary);"></p>
+      </div>
+
+      <!-- Emergency Referral Banner if High Risk -->
+      <div id="result-emergency-cta" style="display: none; background: #fff1f2; border: 1px solid var(--accent-rose); border-radius: 12px; padding: 16px; text-align: center;">
+        <h4 style="color: #9f1239; font-size: 0.95rem; margin-bottom: 4px;">High Risk Detected: Immediate Action Needed</h4>
+        <p style="color: #4c0519; font-size: 0.8rem; margin-bottom: 12px;">Contact nearest mobile veterinary dispensary or call Toll-Free 1962 for on-farm intervention.</p>
+        <a href="/emergency-vet" class="btn btn-danger btn-sm"><i class="fa-solid fa-truck-medical"></i> View Emergency Hospital & Helpline</a>
+      </div>
+
+      <!-- Disclaimer -->
+      <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+        <i class="fa-solid fa-circle-info"></i> Early disease-risk screening advisory only. Does not replace clinical diagnosis by a certified veterinarian. No antibiotics should be administered without veterinary prescription.
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SYMPTOMS_LIST = [
+  'Blisters / lesions on mouth or hooves',
+  'High fever with shivering',
+  'Sudden drop in milk yield (>40%)',
+  'Skin nodules / lumps on body',
+  'Swollen throat / difficulty breathing',
+  'Severe diarrhea or dysentery',
+  'Complete refusal to eat (Anorexia)',
+  'Lameness / unable to walk or stand',
+  'Eye discharge / cloudiness / tears',
+  'Dullness / Lethargy / Drooping ears'
+];
+
+async function initAssessmentPage() {
+  // Render symptoms checklist
+  const container = document.getElementById('symptoms-checklist-container');
+  container.innerHTML = SYMPTOMS_LIST.map((s, idx) => `
+    <label class="checkbox-card" id="card-symptom-${idx}">
+      <input type="checkbox" name="symptom_item" value="${s}">
+      <span style="font-size: 0.84rem; color: var(--text-primary); font-weight: 500;">${s}</span>
+    </label>
+  `).join('');
+
+  // Load Animals into Select dropdown
+  try {
+    const animals = await fetchJSON('/api/animals');
+    const select = document.getElementById('assessment-animal-id');
+    select.innerHTML = '<option value="">-- Choose Animal --</option>' + animals.map(a => `
+      <option value="${a.id}" data-species="${a.species}" data-temp="${a.baseline_temp}" data-hr="${a.baseline_hr}">
+        ${a.animal_code} - ${a.animal_name || 'Unnamed'} (${a.species})
+      </option>
+    `).join('');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const preAnimalId = urlParams.get('animal_id');
+    if (preAnimalId) {
+      select.value = preAnimalId;
+      triggerAnimalChange();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  document.getElementById('assessment-animal-id').addEventListener('change', triggerAnimalChange);
+  initVoiceAssistant();
+}
+
+function triggerAnimalChange() {
+  const select = document.getElementById('assessment-animal-id');
+  const opt = select.options[select.selectedIndex];
+  if (!opt || !opt.dataset.species) return;
+
+  const species = opt.dataset.species;
+  document.getElementById('selected-animal-meta').innerText = `Species: ${species} • Baseline Normal: ${opt.dataset.temp}°C, ${opt.dataset.hr} bpm`;
+}
+
+// ----------------- ADVANCED ROBUST VOICE RECOGNITION ASSISTANT -----------------
+let recognition = null;
+let isListening = false;
+
+function initVoiceAssistant() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const voiceBtn = document.getElementById('btn-voice-assistant');
+  const label = document.getElementById('voice-assistant-label');
+  const banner = document.getElementById('voice-transcript-banner');
+  const textEl = document.getElementById('voice-transcript-text');
+
+  if (!SpeechRecognition) {
+    voiceBtn.addEventListener('click', () => {
+      const input = prompt("Your browser doesn't support Web Speech API natively.\nEnter animal symptoms (e.g., 'fever, skin nodules, stopped eating, blisters'):");
+      if (input) matchVoiceSymptoms(input);
+    });
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-IN'; // Works for Indian English, Tamil phonetics and transliterated words
+
+  voiceBtn.addEventListener('click', () => {
+    if (isListening) {
+      stopVoiceListening();
+      return;
+    }
+
+    try {
+      recognition.start();
+      isListening = true;
+      voiceBtn.classList.add('listening');
+      label.innerText = 'Listening (Click to Stop)';
+      banner.style.display = 'block';
+      textEl.innerHTML = '<span style="color: var(--green-dark);"><i class="fa-solid fa-microphone-lines fa-fade"></i> Listening... Speak symptoms now (e.g. "cow has high fever, blisters on mouth, not eating")</span>';
+    } catch (e) {
+      console.warn('Speech recognition start error:', e);
+      if (isListening) stopVoiceListening();
+    }
+  });
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    let finalTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+      } else {
+        interim += event.results[i][0].transcript;
+      }
+    }
+
+    const currentText = finalTranscript || interim;
+    if (currentText) {
+      textEl.innerHTML = `<strong>Heard:</strong> "${currentText}"`;
+      matchVoiceSymptoms(currentText);
+    }
+  };
+
+  recognition.onend = () => {
+    if (isListening) {
+      // Auto-reconnect if user didn't intentionally stop
+      try {
+        recognition.start();
+      } catch (err) {
+        stopVoiceListening();
+      }
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.warn('Speech error:', event.error);
+    if (event.error === 'no-speech') {
+      textEl.innerHTML = '<span style="color: var(--gold);">Waiting for speech... Please speak into microphone.</span>';
+    } else {
+      stopVoiceListening();
+      textEl.innerText = `Microphone notice: ${event.error}. You can also check symptoms manually.`;
+    }
+  };
+}
+
+function stopVoiceListening() {
+  isListening = false;
+  if (recognition) {
+    try { recognition.stop(); } catch (e) {}
+  }
+  const voiceBtn = document.getElementById('btn-voice-assistant');
+  const label = document.getElementById('voice-assistant-label');
+  const banner = document.getElementById('voice-transcript-banner');
+  if (voiceBtn) voiceBtn.classList.remove('listening');
+  if (label) label.innerText = 'Voice Assistant';
+  setTimeout(() => {
+    if (banner && !isListening) banner.style.display = 'none';
+  }, 5000);
+}
+
+function matchVoiceSymptoms(text) {
+  const lower = text.toLowerCase();
+  let matchedCount = 0;
+  const checkboxes = document.querySelectorAll('input[name="symptom_item"]');
+
+  checkboxes.forEach(cb => {
+    const val = cb.value.toLowerCase();
+    let match = false;
+
+    // Comprehensive synonyms (English + Tamil + Colloquial)
+    if (val.includes('fever') && (lower.includes('fever') || lower.includes('temperature') || lower.includes('hot') || lower.includes('shiver') || lower.includes('kaichal') || lower.includes('சூடு') || lower.includes('காய்ச்சல்'))) match = true;
+    if (val.includes('blister') && (lower.includes('blister') || lower.includes('lesion') || lower.includes('mouth') || lower.includes('hoof') || lower.includes('fmd') || lower.includes('ulcer') || lower.includes('sore') || lower.includes('புண்') || lower.includes('கொப்பளம்'))) match = true;
+    if (val.includes('nodule') && (lower.includes('nodule') || lower.includes('lump') || lower.includes('skin') || lower.includes('lsd') || lower.includes('bump') || lower.includes('pox') || lower.includes('katti') || lower.includes('கட்டி'))) match = true;
+    if (val.includes('throat') && (lower.includes('throat') || lower.includes('breath') || lower.includes('swollen') || lower.includes('wheez') || lower.includes('moochu') || lower.includes('மூச்சு') || lower.includes('தொண்டை'))) match = true;
+    if (val.includes('milk') && (lower.includes('milk') || lower.includes('yield') || lower.includes('drop') || lower.includes('paal') || lower.includes('பால்'))) match = true;
+    if (val.includes('diarrhea') && (lower.includes('diarrhea') || lower.includes('dysentery') || lower.includes('loose') || lower.includes('motion') || lower.includes('beda') || lower.includes('பேதி'))) match = true;
+    if (val.includes('refusal to eat') && (lower.includes('not eating') || lower.includes('refus') || lower.includes('food') || lower.includes('feed') || lower.includes('eating') || lower.includes('theevanam') || lower.includes('சாப்பிடவில்லை'))) match = true;
+    if (val.includes('lameness') && (lower.includes('lame') || lower.includes('walk') || lower.includes('stand') || lower.includes('leg') || lower.includes('limp') || lower.includes('nondi') || lower.includes('நொண்டி'))) match = true;
+    if (val.includes('eye') && (lower.includes('eye') || lower.includes('tear') || lower.includes('discharge') || lower.includes('pink') || lower.includes('blind') || lower.includes('kan') || lower.includes('கண்'))) match = true;
+    if (val.includes('dullness') && (lower.includes('dull') || lower.includes('letharg') || lower.includes('tired') || lower.includes('droop') || lower.includes('sleepy') || lower.includes('asar') || lower.includes('சோர்வு'))) match = true;
+
+    if (match && !cb.checked) {
+      cb.checked = true;
+      const card = cb.closest('.checkbox-card');
+      if (card) {
+        card.style.borderColor = 'var(--green-primary)';
+        card.style.backgroundColor = '#ecfdf5';
+      }
+      matchedCount++;
+    }
+  });
+
+  if (lower.includes('not eating') || lower.includes('refus') || lower.includes('off feed')) {
+    document.getElementById('feeding-status').value = 'Refusing Food (Anorexia)';
+  }
+  if (lower.includes('downer') || lower.includes('cannot stand') || lower.includes('unable to rise') || lower.includes('lying down')) {
+    document.getElementById('activity-status').value = 'Downer (Unable to rise)';
+  }
+
+  if (matchedCount > 0) {
+    showNotification(`Voice Assistant checked ${matchedCount} symptom(s) automatically!`, 'success');
+  }
+}
+
+// Form submit
+document.getElementById('manual-assessment-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const animalId = document.getElementById('assessment-animal-id').value;
+  if (!animalId) {
+    showNotification('Please select an animal', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-run-assessment');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Health Risk...';
+
+  const selectedSymptoms = Array.from(document.querySelectorAll('input[name="symptom_item"]:checked')).map(cb => cb.value);
+
+  const payload = {
+    animal_id: parseInt(animalId),
+    temperature: document.getElementById('vital-temp').value ? parseFloat(document.getElementById('vital-temp').value) : null,
+    heart_rate: document.getElementById('vital-hr').value ? parseFloat(document.getElementById('vital-hr').value) : null,
+    feeding_status: document.getElementById('feeding-status').value,
+    activity_status: document.getElementById('activity-status').value,
+    symptoms: selectedSymptoms,
+    notes: document.getElementById('assessment-notes').value
+  };
+
+  try {
+    const res = await fetchJSON('/api/assessments/manual', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    renderAssessmentResult(res.result, res.animal_code, res.animal_name);
+    showNotification('AI Assessment completed successfully!', 'success');
+  } catch (err) {
+    showNotification('Assessment failed: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-brain"></i> Submit for AI Disease-Risk Analysis';
+  }
+});
+
+function renderAssessmentResult(res, animalCode, animalName) {
+  document.getElementById('ai-result-placeholder').style.display = 'none';
+  const box = document.getElementById('ai-result-box');
+  box.style.display = 'block';
+
+  document.getElementById('result-risk-badge').innerHTML = getRiskBadge(res.risk_level);
+  document.getElementById('result-score-number').innerText = `${res.risk_score} / 100`;
+  const bar = document.getElementById('result-score-bar');
+  bar.style.width = `${res.risk_score}%`;
+
+  if (res.risk_level === 'High') {
+    bar.style.background = '#e11d48';
+    box.style.borderColor = '#fecdd3';
+    document.getElementById('result-action-box').style.background = '#fff1f2';
+    document.getElementById('result-urgency-title').style.color = '#9f1239';
+    document.getElementById('result-emergency-cta').style.display = 'block';
+  } else if (res.risk_level === 'Moderate') {
+    bar.style.background = '#d97706';
+    box.style.borderColor = '#fde68a';
+    document.getElementById('result-action-box').style.background = '#fffbeb';
+    document.getElementById('result-urgency-title').style.color = '#92400e';
+    document.getElementById('result-emergency-cta').style.display = 'none';
+  } else {
+    bar.style.background = '#059669';
+    box.style.borderColor = '#a7f3d0';
+    document.getElementById('result-action-box').style.background = '#ecfdf5';
+    document.getElementById('result-urgency-title').style.color = '#065f46';
+    document.getElementById('result-emergency-cta').style.display = 'none';
+  }
+
+  document.getElementById('result-suspected-conditions').innerText = res.suspected_conditions.join(', ');
+  const reasonsList = document.getElementById('result-reasons-list');
+  reasonsList.innerHTML = res.reasons_breakdown.map(r => `<li>${r}</li>`).join('');
+
+  document.getElementById('result-urgency-title').innerText = res.urgency_level;
+  document.getElementById('result-rec-text').innerText = res.recommendations;
+}
+
+document.addEventListener('DOMContentLoaded', initAssessmentPage);
+</script>
+{% endblock %}
