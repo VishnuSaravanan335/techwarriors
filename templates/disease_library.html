@@ -181,7 +181,9 @@ function openDiseaseModal(d) {
   document.getElementById('modal-warning-urgency').innerText = d.warning_signs_urgency;
 
   const modal = document.getElementById('disease-detail-modal');
+  modal.setAttribute('data-current-disease-key', d.disease_key || '');
   modal.style.display = 'block';
+  if (typeof applyCurrentLanguage === 'function') applyCurrentLanguage();
   modal.scrollIntoView({ behavior: 'smooth' });
 }
 

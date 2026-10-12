@@ -465,6 +465,8 @@ function renderAssessmentResult(res, animalCode, animalName) {
 
   document.getElementById('result-urgency-title').innerText = res.urgency_level;
   document.getElementById('result-rec-text').innerText = res.recommendations;
+  if (typeof applyCurrentLanguage === 'function') applyCurrentLanguage();
+  box.scrollIntoView({ behavior: 'smooth' });
 }
 
 document.addEventListener('DOMContentLoaded', initAssessmentPage);
