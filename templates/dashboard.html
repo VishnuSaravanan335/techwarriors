@@ -205,6 +205,9 @@ async function loadDashboard() {
       tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px;">No animals found. Please register an animal.</td></tr>';
     }
 
+    if (typeof applyCurrentLanguage === 'function') {
+      applyCurrentLanguage();
+    }
   } catch (err) {
     console.error('Failed to load dashboard:', err);
     showNotification('Error loading dashboard: ' + err.message, 'error');

@@ -82,6 +82,9 @@ async function loadAlerts() {
     }
 
     document.getElementById('alert-counter-badge').innerText = `${unresolvedCount} Unresolved`;
+    if (typeof applyCurrentLanguage === 'function') {
+      applyCurrentLanguage();
+    }
   } catch (err) {
     console.error(err);
   }

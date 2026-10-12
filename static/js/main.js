@@ -17,7 +17,7 @@ const DICTIONARY = {
   "PashuRaksha AI": "பசு ரக்ஷா AI",
   "SIH26128 • Animal Health": "SIH26128 • கால்நடை நலம்",
 
-  // Top Navbar Headings
+  // Top Navbar Headings & Subheadings
   "Livestock Health Dashboard": "கால்நடை சுகாதார முகப்பு பலகை",
   "Real-time overview of herd health, IoT telemetry, and early risk detection": "மந்தை ஆரோக்கியம், சென்சார் தகவல் மற்றும் ஆரம்ப நோய் கணிப்பு",
   "Simple Animal Registration": "எளிய கால்நடை பதிவு",
@@ -63,8 +63,19 @@ const DICTIONARY = {
   "AI Health Status": "AI ஆரோக்கிய நிலை",
   "Actions": "செயல்கள்",
   "Recent AI Risk Assessments": "சமீபத்திய AI பரிசோதனைகள்",
+  "Upcoming Vaccinations": "வரவிருக்கும் தடுப்பூசிகள்",
   "Preventative Care & Vaccines": "தடுப்பூசி மற்றும் பராமரிப்பு",
   "View All": "அனைத்தும் காண்க",
+  "Loading herd data...": "கால்நடை விவரங்கள் ஏற்றப்படுகின்றன...",
+  "No animals found. Please register an animal.": "கால்நடைகள் எதுவும் இல்லை. புதிய கால்நடையைப் பதிவு செய்க.",
+  "No recent assessments recorded.": "சமீபத்திய பரிசோதனைப் பதிவுகள் எதுவும் இல்லை.",
+  "No upcoming vaccinations.": "வரவிருக்கும் தடுப்பூசிகள் எதுவும் இல்லை.",
+  "Routine screening": "வழக்கமான பரிசோதனை",
+  "For": "இதற்காக:",
+  "Due:": "தவணை:",
+  "Due Date": "தவணை தேதி",
+
+  // One-Click Registration
   "One-Click Animal Registration": "எளிய கால்நடை பதிவு",
   "Farmer-Friendly Fast UI": "விவசாயிகளுக்கான எளிய திரை",
   "1. Owner Information (Saved for Herd Profile)": "1. உரிமையாளர் விவரங்கள் (Herd Profile)",
@@ -74,21 +85,31 @@ const DICTIONARY = {
   "State": "மாநிலம்",
   "District (For Emergency 1962 Routing)": "மாவட்டம் (1962 அவசர உதவிக்கு)",
   "2. Animal Identity & Biological Profile": "2. கால்நடை அடையாள விவரங்கள்",
+  "2. Animal Details": "2. கால்நடை விவரங்கள்",
   "Species *": "விலங்கினம் *",
+  "Animal Type / Species *": "விலங்கினம் / இனம் *",
   "Breed": "இனம் / வகை",
+  "Breed (Optional)": "இனம் / வகை (விருப்பத்தேர்வு)",
   "Animal Given Name / Tag Name": "கால்நடையின் பெயர்",
+  "Animal Name (Optional)": "கால்நடை பெயர் (விருப்பத்தேர்வு)",
+  "Helps dairy workers easily recognize the animal": "பண்ணை பணியாளர்கள் எளிதில் அடையாளம் காண உதவும்",
   "Estimated Age (Years)": "வயது (ஆண்டுகள்)",
+  "Age (Years)": "வயது (ஆண்டுகள்)",
   "Gender": "பாலினம்",
+  "Enable IoT Telemetry Tracking for this animal": "இந்தக் கால்நடைக்கு IoT சென்சார் கண்காணிப்பை இயக்கு",
   "3. Choose Monitoring Mode (SIH Dual Architecture)": "3. கண்காணிப்பு முறையைத் தேர்ந்தெடுக்கவும்",
   "Mode 1: Automated IoT Wearable Collar": "முறை 1: தானியங்கி IoT சென்சார் பட்டை",
   "Collar / Ear-Tag Device ID (Optional)": "சென்சார் சாதனம் எண் (விருப்பத்தேர்வு)",
   "Auto-generated ESP32 ID if left blank": "காலியாக விட்டால் தானாக உருவாக்கப்படும்",
   "Mode 2: Farmer Manual Health Checklist": "முறை 2: விவசாயி நேரடி அறிகுறி ஆய்வு",
   "Generate Permanent Animal ID & Save": "கால்நடை எண்ணை உருவாக்கி சேமிக்க",
+  "Register Animal & Generate Unique ID": "கால்நடையைப் பதிவு செய்து அடையாள எண் பெறுக",
 
   // Manual Check Form & AI Detector
   "Health Observation Checklist": "சுகாதார அறிகுறி ஆய்வுப் பட்டியல்",
   "Select Registered Animal *": "பதிவுசெய்த கால்நடையைத் தேர்ந்தெடுக்கவும் *",
+  "Loading animals...": "கால்நடைகள் ஏற்றப்படுகின்றன...",
+  "Select animal to view reference vitals & history": "ஆரம்ப உடல் நிலை விவரங்களைக் காண கால்நடையைத் தேர்ந்தெடுக்கவும்",
   "Optional Physical Measurements": "உடல் அளவீடுகள் (விருப்பத்தேர்வு)",
   "Body Temp (°C)": "உடல் வெப்பநிலை (°C)",
   "Heart Rate (bpm)": "இதயத் துடிப்பு (bpm)",
@@ -98,6 +119,7 @@ const DICTIONARY = {
   "Voice Assistant": "குரல் வழி உள்ளீடு",
   "Additional Observations / Notes": "கூடுதல் மருத்துவக் குறிப்புகள்",
   "Submit for AI Disease-Risk Analysis": "AI நோய் பகுப்பாய்விற்கு சமர்ப்பிக்கவும்",
+  "Analyzing Health Risk...": "ஆரோக்கிய பாதிப்பு பகுப்பாய்வு செய்யப்படுகிறது...",
   "AI Risk Engine Ready": "AI பகுப்பாய்வு இயந்திரம் தயார்",
   "AI Disease-Risk Assessment": "AI நோய் பாதிப்பு பகுப்பாய்வு",
   "Calibrated Disease Risk Score": "கணிக்கப்பட்ட நோய் ஆபத்து அளவு",
@@ -108,6 +130,9 @@ const DICTIONARY = {
   "High Risk Detected: Immediate Action Needed": "அதிதீவிர ஆபத்து: உடனடி நடவடிக்கை தேவை",
   "Contact nearest mobile veterinary dispensary or call Toll-Free 1962 for on-farm intervention.": "அருகிலுள்ள அரசு கால்நடை மருந்தகம் அல்லது கட்டணமில்லா உதவி எண் 1962-ஐ உடனடியாக அழைக்கவும்.",
   "View Emergency Hospital & Helpline": "அவசர சிகிச்சை மையம் & உதவி எண்கள் காண்க",
+  "Early disease-risk screening advisory only. Does not replace clinical diagnosis by a certified veterinarian. No antibiotics should be administered without veterinary prescription.": "ஆரம்ப நோய்-ஆபத்து எச்சரிக்கை ஆலோசனை மட்டுமே. சான்றளிக்கப்பட்ட கால்நடை மருத்துவரின் நேரடி பரிசோதனைக்கு மாற்றாகாது. மருத்துவர் பரிந்துரையின்றி ஆன்டிபயாடிக் மருந்துகளை செலுத்தக் கூடாது.",
+  "Listening (Click to Stop)": "கேட்கிறது... (நிறுத்த கிளிக் செய்)",
+  "Voice Assistant checked": "குரல் உதவியாளர் தானாகத் தேர்ந்தெடுத்தது",
 
   // Vision Screening
   "Capture or Upload Animal Photo": "புகைப்படம் எடுக்கவும் / பதிவேற்றவும்",
@@ -115,6 +140,7 @@ const DICTIONARY = {
   "Select Animal ID *": "கால்நடை எண் தேர்வு *",
   "Animal Photograph (File or Camera)": "கால்நடை புகைப்படம் (கேமரா / படம்)",
   "Click to browse image or snap photo": "புகைப்படம் எடுக்க அல்லது தேர்வு செய்ய கிளிக் செய்யவும்",
+  "Supports JPG, PNG (Max 10MB). Full side-profile (for body condition), flank, mouth, or hooves.": "JPG, PNG ஏற்கப்படும். உடல் நிலை மதிப்பீட்டிற்கு பக்கவாட்டு தோற்றம், வாய் அல்லது குளம்புகள்.",
   "Instant Clinical Demonstration Presets:": "மாதிரி மருத்துவப் பரிசோதனைகள்:",
   "Underweight Cow (BCS < 2.0)": "மெலிந்த மாடு (BCS < 2.0)",
   "Lumpy Skin Nodules": "சருமக் கட்டிகள் (LSD)",
@@ -133,6 +159,9 @@ const DICTIONARY = {
   "Escalation Triggers:": "தீவிர நிலை எச்சரிக்கைக் குறிகள்:",
   "View Full Remedial Protocol": "முழு சிகிச்சை முறையைக் காண்க",
   "Emergency Vet Hotline (1962)": "அவசர உதவி எண் (1962)",
+  "Quality: Passed": "படத் தரம்: நன்று",
+  "Quality: Low Light": "படத் தரம்: குறைந்த வெளிச்சம்",
+  "Quality: Blurry": "படத் தரம்: மங்கலானது",
 
   // Disease Library Modal & Cards
   "Official Veterinary Clinical Repository": "அங்கீகரிக்கப்பட்ட மருத்துவக் களஞ்சியம்",
@@ -152,6 +181,8 @@ const DICTIONARY = {
   "Prevention & Biosecurity": "தடுப்பு முறைகள் & பண்ணை உயிரியல் பாதுகாப்பு",
   "Warning Signs Requiring Urgent Veterinary Call": "உடனடியாக மருத்துவரை அழைக்க வேண்டிய எச்சரிக்கை அறிகுறிகள்",
   "View Clinical Remedial Protocol": "மருத்துவப் பராமரிப்பு முறையைக் காண்க",
+  "Loading veterinary disease entries...": "கால்நடை நோய் விவரங்கள் ஏற்றப்படுகின்றன...",
+  "Key Signs:": "முக்கிய அறிகுறிகள்:",
 
   // Emergency & Helpline
   "Toll-Free 24x7 Mobile Veterinary Ambulance Clinic": "24 மணி நேர கட்டணமில்லா நடமாடும் ஆம்புலன்ஸ்",
@@ -177,7 +208,6 @@ const DICTIONARY = {
   "Add Vaccination to Schedule": "அட்டவணையில் சேர்க்க",
   "National Vaccination Calendar (NADCP)": "தேசிய தடுப்பூசி வழிகாட்டுதல் (NADCP)",
   "Herd Preventative Vaccination Log": "பதிவு செய்யப்பட்ட தடுப்பூசி விவரங்கள்",
-  "Due Date": "தவணை தேதி",
   "Status": "நிலை",
   "Veterinary Clinical Notes": "மருத்துவக் குறிப்புகள்",
   "Action": "செயல்",
@@ -190,6 +220,19 @@ const DICTIONARY = {
   // Care Plans
   "Generated Personalized Care Plans": "உருவாக்கப்பட்ட தனிப்பயன் பராமரிப்புத் திட்டங்கள்",
   "Veterinary-Aligned Protocols": "கால்நடை மருத்துவ நெறிமுறைகள்",
+
+  // Alerts
+  "Active & Resolved Health Alerts": "நடப்பு & தீர்க்கப்பட்ட சுகாதார எச்சரிக்கைகள்",
+  "1 Unresolved": "1 தீர்க்கப்படாத எச்சரிக்கை",
+  "Source Mode": "கண்காணிப்பு முறை",
+  "Alert Title & Symptoms": "எச்சரிக்கை தலைப்பு & அறிகுறிகள்",
+  "Risk Level": "ஆபத்து அளவு",
+  "Recommended Next Step": "அடுத்த கட்ட நடவடிக்கை",
+  "Status & Action": "நிலை & செயல்",
+  "Loading alert stream...": "எச்சரிக்கைகள் ஏற்றப்படுகின்றன...",
+  "Mark Resolved": "தீர்க்கப்பட்டது என குறிக்க",
+  "Resolved": "தீர்க்கப்பட்டது",
+  "Unresolved": "தீர்க்கப்படாதது",
 
   // IoT Simulator
   "IoT Hardware Link & Telemetry Simulator": "IoT சென்சார் & தகவல் மாதிரி இயக்கி",
@@ -206,12 +249,28 @@ const DICTIONARY = {
   "Rumination / Digestion": "அசைபோடும் நேரம்",
   "Live Biometric Telemetry Stream": "நேரடி சென்சார் தகவல் பதிவு",
 
+  // Risk Badges & Statuses
+  "High Risk": "அதிதீவிர ஆபத்து",
+  "Moderate Risk": "மிதமான ஆபத்து",
+  "Low Risk": "குறைந்த ஆபத்து",
+  "IoT Sensor": "IoT சென்சார்",
+  "Photo AI": "புகைப்பட AI",
+
+  // Animals & Species
+  "Cow": "பசு",
+  "Buffalo": "எருமை",
+  "Goat": "ஆடு",
+  "Sheep": "செம்மறி ஆடு",
+  "Dog": "நாய்",
+  "Cat": "பூனை",
+  "Other Livestock": "பிற கால்நடைகள்",
+
   // Symptoms & Form Choices
-  "Normal Appetite (வழக்கமான தீவனம்)": "வழக்கமான தீவனம் (Normal Appetite)",
-  "Reduced Feeding (தீவனம் குறைந்துள்ளது)": "தீவனம் குறைந்துள்ளது (Reduced Feeding)",
+  "Normal Appetite (வழக்கமான தீவனம்)": "வழக்கமான தீவனம் (Normal)",
+  "Reduced Feeding (தீவனம் குறைந்துள்ளது)": "தீவனம் குறைந்துள்ளது (Reduced)",
   "Refusing Food / Off-Feed (தீவனம் உண்ணவில்லை)": "தீவனம் உண்ணவில்லை (Refusing Food)",
   "Normal Active & Alert": "சுறுசுறுப்பாக உள்ளது (Active)",
-  "Dull / Lethargic (சோர்வாக உள்ளது)": "சோர்வாக உள்ளது (Dull/Lethargic)",
+  "Dull / Lethargic (சோர்வாக உள்ளது)": "சோர்வாக உள்ளது (Dull)",
   "Restless / Shivering (நடுக்கம் / அமைதியின்மை)": "நடுக்கம் / அமைதியின்மை (Restless)",
   "Downer (படுத்துள்ளது / எழ முடியவில்லை)": "படுத்துள்ளது / எழ முடியவில்லை (Downer)",
   "Blisters / lesions on mouth or hooves": "வாய் அல்லது கால்களில் கொப்பளங்கள் / புண்கள் (FMD)",
@@ -223,7 +282,69 @@ const DICTIONARY = {
   "Complete refusal to eat (Anorexia)": "தீவனம் உண்ண முற்றிலும் மறுத்தல் (Off-Feed)",
   "Lameness / unable to walk or stand": "நொண்டி நடத்தல் / நடக்க முடியாமை (Lameness)",
   "Eye discharge / cloudiness / tears": "கண்களில் நீர் / பீளை / வெண்படலம் (Eye Discharge)",
-  "Dullness / Lethargy / Drooping ears": "காதுகள் தொங்குதல் / மந்தமான நிலை (Lethargy)"
+  "Dullness / Lethargy / Drooping ears": "காதுகள் தொங்குதல் / மந்தமான நிலை (Lethargy)",
+
+  // Common Disease Titles
+  "Foot and Mouth Disease (FMD)": "கோமாரி நோய் (FMD)",
+  "Lumpy Skin Disease (LSD)": "சருமக் கழலை நோய் (LSD)",
+  "Hemorrhagic Septicemia (HS)": "தொண்டை அடைப்பான் நோய் (HS)",
+  "Black Quarter (BQ)": "கருங்கால் நோய் (BQ)",
+  "Brucellosis": "புருசெல்லோசிஸ்",
+  "Theileriosis": "தைலீரியோசிஸ்",
+  "Normal Condition / Unremarkable": "ஆரோக்கியமான நிலை",
+
+  // Common Placeholders
+  "e.g. Murugan R.": "எ.கா: முருகன் ரா.",
+  "10-digit mobile number": "10-இலக்க கைபேசி எண்",
+  "e.g. Lakshmi, Ponni, Kaveri": "எ.கா: லட்சுமி, பொன்னி, காவேரி",
+  "e.g. Kangayam, Gir, Jersey Cross, Murrah": "எ.கா: காங்கேயம், கிர், முர்ரா",
+  "e.g. 38.6": "எ.கா: 38.6",
+  "e.g. 70": "எ.கா: 70",
+  "e.g., Started showing signs yesterday evening; water intake dropped...": "எ.கா: நேற்று மாலை முதல் அறிகுறி; தீவனம் மற்றும் தண்ணீர் உட்கொள்ளவில்லை...",
+
+  // Home Page / Index
+  "Smart Animal Health & Disease Prevention System": "ஸ்மார்ட் கால்நடை நலம் & நோய் தடுப்பு தளம்",
+  "SIH26128 Solution — AI-Powered Livestock Healthcare with Dual-Mode (IoT & Manual) Monitoring": "SIH26128 தீர்வு — AI-இயங்கும் இரட்டை முறை (IoT & நேரடி) கால்நடை கண்காணிப்பு தளம்",
+  "Smart India Hackathon 2026 • Problem Statement SIH26128": "ஸ்மார்ட் இந்தியா ஹேக்கத்தான் 2026 • SIH26128",
+  "Empowering dairy farmers and veterinarians with early disease detection, collision-resistant unique animal identities, and rapid 1962 emergency assistance.": "ஆரம்ப நோய் கண்டறிதல், தனித்துவமான அடையாள குறியீடு மற்றும் 1962 அவசர உதவி மூலம் பால் பண்ணையாளர்கள் மற்றும் மருத்துவர்களை மேம்படுத்துதல்.",
+  "Open Unified Dashboard": "ஒருங்கிணைந்த முகப்பு பலகை",
+  "Quick Animal Registration": "விரைவான கால்நடை பதிவு",
+  "IoT Automated Telemetry": "தானியங்கி IoT சென்சார் கண்காணிப்பு",
+  "Continuous biometric collar & tag telemetry using ESP32/ESP8266. Automatic sensor anomaly alarms, rumination tracking, and temperature thresholds.": "ESP32/ESP8266 காலர் பட்டைகள் மூலம் தொடர்ச்சியான உடல் வெப்பநிலை, நாடி மற்றும் அசைபோடும் நேரம் கண்காணிப்பு.",
+  "ESP32 / ESP8266 REST and MQTT transmission": "ESP32 / ESP8266 REST & MQTT தகவல் தொடர்பு",
+  "Continuous body temperature and heart-rate monitoring": "தொடர்ச்சியான உடல் வெப்பநிலை மற்றும் இதயத் துடிப்பு கண்காணிப்பு",
+  "Automated anomaly alarms with species baseline comparison": "இயல்பு நிலையை ஒப்பிட்டு தானியங்கி ஆபத்து எச்சரிக்கை",
+  "Built-in hardware telemetry simulator": "உள்ளமைக்கப்பட்ட சென்சார் மாதிரி இயக்கி",
+  "Launch IoT Monitor": "IoT கண்காணிப்பைத் தொடங்கு",
+  "Manual Health Monitoring": "நேரடி சுகாதார அறிகுறி ஆய்வு",
+  "Affordable observation checklist for rural farmers without IoT hardware or reliable internet. Feeds into the same AI disease prediction engine.": "சென்சார்கள் அல்லது இணையம் இல்லாத விவசாயிகளுக்கான எளிய மருத்துவக் குறிப்புப் பட்டியல் மற்றும் AI நோய் கணிப்பு.",
+  "Structured checklist for feeding, posture & symptoms": "தீவனம், சுறுசுறுப்பு & அறிகுறிகளுக்கான முறைப்படுத்தப்பட்ட பட்டியல்",
+  "Optional physical vital measurements (temp / pulse)": "உடல் வெப்பநிலை மற்றும் நாடித் துடிப்பு விருப்ப அளவீடுகள்",
+  "0-100 calibrated disease risk score with explainable factors": "விளக்கக்கூடிய காரணங்களுடன் 0-100 நோய் ஆபத்து மதிப்பீடு",
+  "NADCP vaccination reminders and preventative schedules": "NADCP தடுப்பூசி நினைவூட்டல் மற்றும் அட்டவணை",
+  "Launch Manual Check": "நேரடி ஆய்வைத் தொடங்கு",
+  "Core Architectural Features": "முக்கிய கட்டமைப்பு சிறப்பம்சங்கள்",
+  "Permanent Animal IDs": "நிரந்தர கால்நடை அடையாள எண்கள்",
+  "Collision-resistant short codes (e.g. COW-1047) linked to farmer mobile. Reusable profiles across herd additions.": "கைபேசி எண்ணுடன் இணைக்கப்பட்ட தனித்துவமான எளிய அடையாளக் குறியீடு (எ.கா: COW-1047).",
+  "Computer Vision AI": "கம்ப்யூட்டர் விஷன் AI பார்வை",
+  "Photo screening for Lumpy Skin Disease (LSD) dermal nodules and Foot & Mouth (FMD) lesions with quality checks.": "சருமக் கட்டிகள் (LSD) மற்றும் கோமாரிப் புண்களை (FMD) புகைப்பட ஆய்வு மூலம் கண்டறிதல்.",
+  "1962 Emergency Care": "1962 அவசர மருத்துவ உதவி",
+  "Automated referral to official state/district veterinary dispensaries and verified mobile veterinary clinic helplines.": "அரசு கால்நடை மருந்தகங்கள் மற்றும் 1962 ஆம்புலன்ஸ் சேவைக்கு தானியங்கி பரிந்துரை.",
+  "Rumination Time": "அசைபோடும் நேரம்",
+  "Baseline Normal": "இயல்பான நிலை",
+  "Normal Rhythm": "வழக்கமான துடிப்பு",
+  "Rumen Motility: Optimal": "செரிமான இயக்கம்: சீரானது",
+  "Simulation Stream": "மாதிரி தகவல் இயக்கம்",
+  "Auto-Stream: OFF": "தானியங்கி இயக்கம்: ஆஃப்",
+  "Auto-Stream: ON": "தானியங்கி இயக்கம்: ஆன்",
+  "Loading IoT-enabled herd...": "சென்சார் இணைக்கப்பட்ட கால்நடைகள் ஏற்றப்படுகின்றன...",
+  "ESP32 / ESP8266 REST & MQTT Compatible": "ESP32 / ESP8266 REST & MQTT இணக்கமானது",
+  "Directions": "வழித்தடம் காண்க",
+  "Call": "அழைக்க",
+  "Observable Findings:": "தென்படும் அறிகுறிகள்:",
+  "Safe Immediate Care:": "பாதுகாப்பான உடனடிப் பராமரிப்பு:",
+  "Urgency:": "அவசர நிலை:",
+  "Escalation:": "தீவிர நிலை குறி:"
 };
 
 // Reverse dictionary for Tamil -> English
@@ -231,6 +352,9 @@ const REVERSE_DICT = {};
 for (const [en, ta] of Object.entries(DICTIONARY)) {
   REVERSE_DICT[ta] = en;
 }
+
+// Phrase list sorted by descending length for sub-string replacements
+const PHRASE_LIST = Object.entries(DICTIONARY).sort((a, b) => b[0].length - a[0].length);
 
 // ----------------- DISEASE CONTENT TRANSLATION DICTIONARY -----------------
 const DISEASE_TRANSLATIONS = {
@@ -356,16 +480,88 @@ function toggleLanguage() {
   const next = current === 'en' ? 'ta' : 'en';
   localStorage.setItem('pashu_lang', next);
   applyCurrentLanguage();
+  showNotification(next === 'ta' ? 'தமிழ் மொழி மாற்றப்பட்டது (Tamil Active)' : 'Switched to English', 'info');
+}
+
+function translateDOMTree(root, targetLang) {
+  if (!root) return;
+
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        const tag = parent.tagName.toUpperCase();
+        if (['SCRIPT', 'STYLE', 'CODE', 'NOSCRIPT'].includes(tag)) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('#btn-lang-toggle')) return NodeFilter.FILTER_REJECT;
+        if (parent.classList.contains('animal-code-tag')) return NodeFilter.FILTER_REJECT;
+        if (parent.classList.contains('fa') || parent.classList.contains('fas') || parent.classList.contains('fa-solid')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    },
+    false
+  );
+
+  const textNodes = [];
+  let currentNode;
+  while ((currentNode = walker.nextNode())) {
+    textNodes.push(currentNode);
+  }
+
+  for (const node of textNodes) {
+    const val = node.nodeValue;
+    const trimmed = val.trim();
+    if (!trimmed) continue;
+
+    // Cache the original English value on the node
+    if (typeof node._pashuOrigEn === 'undefined') {
+      node._pashuOrigEn = val;
+    }
+
+    if (targetLang === 'ta') {
+      if (DICTIONARY[trimmed]) {
+        node.nodeValue = val.replace(trimmed, DICTIONARY[trimmed]);
+      } else {
+        // Try substring phrase replacement
+        let res = val;
+        let matched = false;
+        for (const [enPhrase, taPhrase] of PHRASE_LIST) {
+          if (res.includes(enPhrase)) {
+            res = res.split(enPhrase).join(taPhrase);
+            matched = true;
+          }
+        }
+        if (matched) {
+          node.nodeValue = res;
+        }
+      }
+    } else {
+      // Restore English
+      if (node._pashuOrigEn) {
+        node.nodeValue = node._pashuOrigEn;
+      } else if (REVERSE_DICT[trimmed]) {
+        node.nodeValue = val.replace(trimmed, REVERSE_DICT[trimmed]);
+      }
+    }
+  }
 }
 
 function applyCurrentLanguage() {
   const lang = localStorage.getItem('pashu_lang') || 'en';
+  
+  // 1. Update toggle button display
   const btnText = document.getElementById('current-lang-text');
   if (btnText) {
-    btnText.innerText = lang === 'en' ? 'தமிழ் (Tamil)' : 'English (ஆங்கிலம்)';
+    if (lang === 'en') {
+      btnText.innerHTML = '<span style="opacity: 0.75;">Lang:</span> English • <strong>தமிழ்</strong>';
+    } else {
+      btnText.innerHTML = '<span style="opacity: 0.75;">மொழி:</span> தமிழ் • <strong>English</strong>';
+    }
   }
 
-  // 1. Process elements with explicit data-lang-en and data-lang-ta
+  // 2. Elements with explicit data-lang-en and data-lang-ta
   document.querySelectorAll('[data-lang-en]').forEach(el => {
     const text = el.getAttribute(`data-lang-${lang}`);
     if (text) {
@@ -373,48 +569,57 @@ function applyCurrentLanguage() {
     }
   });
 
-  // 2. Translate all visible text elements across the page using our comprehensive dictionary
-  const textSelectors = 'h1, h2, h3, h4, h5, p, span, label, th, a, button, .stat-title, .stat-sub, .form-hint, .care-section-title';
-  document.querySelectorAll(textSelectors).forEach(el => {
-    if (el.id === 'current-lang-text' || el.closest('#btn-lang-toggle') || el.classList.contains('animal-code-tag')) return;
-    
-    // Check if element has child elements with icons; translate direct text
-    const text = (el.innerText || '').trim();
-    if (!text) return;
+  // 3. Translate all text nodes in the DOM recursively without breaking HTML icons or markup
+  translateDOMTree(document.body, lang);
 
+  // 4. Translate input & textarea placeholders
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+    if (typeof el._pashuOrigPlaceholder === 'undefined') {
+      el._pashuOrigPlaceholder = el.placeholder;
+    }
     if (lang === 'ta') {
-      if (DICTIONARY[text]) {
-        if (!el.getAttribute('data-original-en')) el.setAttribute('data-original-en', text);
-        el.innerText = DICTIONARY[text];
+      if (DICTIONARY[el._pashuOrigPlaceholder]) {
+        el.placeholder = DICTIONARY[el._pashuOrigPlaceholder];
       }
     } else {
-      const orig = el.getAttribute('data-original-en');
-      if (orig) {
-        el.innerText = orig;
-      } else if (REVERSE_DICT[text]) {
-        el.innerText = REVERSE_DICT[text];
+      if (el._pashuOrigPlaceholder) {
+        el.placeholder = el._pashuOrigPlaceholder;
       }
     }
   });
 
-  // 3. Translate select options text
+  // 5. Translate select options
   document.querySelectorAll('select option').forEach(opt => {
-    const text = (opt.innerText || '').trim();
-    if (!text) return;
+    if (typeof opt._pashuOrigText === 'undefined') {
+      opt._pashuOrigText = opt.innerText.trim();
+    }
     if (lang === 'ta') {
-      if (DICTIONARY[text]) {
-        if (!opt.getAttribute('data-original-en')) opt.setAttribute('data-original-en', text);
-        opt.innerText = DICTIONARY[text];
+      if (DICTIONARY[opt._pashuOrigText]) {
+        opt.innerText = DICTIONARY[opt._pashuOrigText];
       }
     } else {
-      const orig = opt.getAttribute('data-original-en');
-      if (orig) opt.innerText = orig;
-      else if (REVERSE_DICT[text]) opt.innerText = REVERSE_DICT[text];
+      if (opt._pashuOrigText) {
+        opt.innerText = opt._pashuOrigText;
+      }
     }
   });
 
-  // 4. Translate disease detail modal if open
+  // 6. Translate Disease Detail Modal & Cards if open
   translateDiseaseModalIfOpen(lang);
+  translateDiseaseCardsIfPresent(lang);
+}
+
+function translateDiseaseCardsIfPresent(lang) {
+  const container = document.getElementById('disease-cards-container');
+  if (!container) return;
+
+  // If allDiseases array is loaded in disease_library.html
+  if (typeof allDiseases !== 'undefined' && Array.isArray(allDiseases) && allDiseases.length > 0) {
+    if (typeof renderDiseaseCards === 'function') {
+      // Let renderDiseaseCards re-render with active language
+      renderDiseaseCards(allDiseases);
+    }
+  }
 }
 
 function translateDiseaseModalIfOpen(lang) {
@@ -425,6 +630,8 @@ function translateDiseaseModalIfOpen(lang) {
   if (!currentKey || !DISEASE_TRANSLATIONS[currentKey]) return;
 
   const t = DISEASE_TRANSLATIONS[currentKey];
+  const orig = modal._originalDiseaseData || {};
+
   if (lang === 'ta') {
     if (t.name) document.getElementById('modal-disease-title').innerText = t.name;
     if (t.description) document.getElementById('modal-description').innerText = t.description;
@@ -436,11 +643,27 @@ function translateDiseaseModalIfOpen(lang) {
     if (t.medicine_info) document.getElementById('modal-medicine-info').innerText = t.medicine_info;
     if (t.prevention) document.getElementById('modal-prevention').innerText = t.prevention;
     if (t.warning_signs) document.getElementById('modal-warning-urgency').innerText = t.warning_signs;
+  } else {
+    // Restore English from original disease object
+    if (orig.name) document.getElementById('modal-disease-title').innerText = orig.name;
+    if (orig.description) document.getElementById('modal-description').innerText = orig.description;
+    if (orig.causes_risk_factors) document.getElementById('modal-causes').innerText = orig.causes_risk_factors;
+    if (orig.visible_signs) document.getElementById('modal-visible-signs').innerText = orig.visible_signs;
+    if (orig.invisible_signs) document.getElementById('modal-invisible-signs').innerText = orig.invisible_signs;
+    if (orig.diagnostic_tests) document.getElementById('modal-tests').innerText = orig.diagnostic_tests;
+    if (orig.immediate_first_aid) document.getElementById('modal-first-aid').innerText = orig.immediate_first_aid;
+    if (orig.medicine_info_restrictions) document.getElementById('modal-medicine-info').innerText = orig.medicine_info_restrictions;
+    if (orig.prevention_biosecurity) document.getElementById('modal-prevention').innerText = orig.prevention_biosecurity;
+    if (orig.warning_signs_urgency) document.getElementById('modal-warning-urgency').innerText = orig.warning_signs_urgency;
   }
 }
 
+// Global hook for dynamic content translation
+window.applyCurrentLanguage = applyCurrentLanguage;
+window.toggleLanguage = toggleLanguage;
+
 document.addEventListener('DOMContentLoaded', () => {
   applyCurrentLanguage();
-  setTimeout(applyCurrentLanguage, 400);
-  setTimeout(applyCurrentLanguage, 1200);
+  setTimeout(applyCurrentLanguage, 300);
+  setTimeout(applyCurrentLanguage, 1000);
 });

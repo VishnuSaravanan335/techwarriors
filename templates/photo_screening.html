@@ -325,6 +325,8 @@ function renderCarePlanResult(screening) {
     card.style.borderColor = 'var(--gold-border)';
   } else {
     card.style.borderColor = 'var(--green-border)';
+  if (typeof applyCurrentLanguage === 'function') {
+    applyCurrentLanguage();
   }
 
   card.scrollIntoView({ behavior: 'smooth' });

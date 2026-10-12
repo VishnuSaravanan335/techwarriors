@@ -196,6 +196,10 @@ async function loadVaccinationsTable() {
     } else {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px; color: var(--text-muted);">No vaccination records scheduled. Add one using the form above.</td></tr>';
     }
+
+    if (typeof applyCurrentLanguage === 'function') {
+      applyCurrentLanguage();
+    }
   } catch (err) {
     console.error(err);
   }
