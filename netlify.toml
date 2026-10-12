@@ -1,20 +1,75 @@
 # Netlify Deployment Configuration for SIH26128 Smart Animal Health Platform
 [build]
-  command = "python -c \"import shutil, os; os.makedirs('public', exist_ok=True); shutil.copytree('static', 'public/static', dirs_exist_ok=True)\""
+  command = "python build_static.py"
   publish = "public"
-  functions = "netlify/functions"
 
 [build.environment]
   PYTHON_VERSION = "3.10"
 
-# Direct static CDN routing for CSS, JS, and uploads
+# Static assets CDN caching
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Direct clean URL rewrites for application pages
 [[redirects]]
-  from = "/static/*"
-  to = "/static/:splat"
+  from = "/dashboard"
+  to = "/dashboard.html"
   status = 200
 
-# Route all pages and API endpoints to the Netlify Serverless Python function
+[[redirects]]
+  from = "/register-animal"
+  to = "/register-animal.html"
+  status = 200
+
+[[redirects]]
+  from = "/manual-assessment"
+  to = "/manual-assessment.html"
+  status = 200
+
+[[redirects]]
+  from = "/iot-monitor"
+  to = "/iot-monitor.html"
+  status = 200
+
+[[redirects]]
+  from = "/photo-screening"
+  to = "/photo-screening.html"
+  status = 200
+
+[[redirects]]
+  from = "/emergency-vet"
+  to = "/emergency-vet.html"
+  status = 200
+
+[[redirects]]
+  from = "/alerts"
+  to = "/alerts.html"
+  status = 200
+
+[[redirects]]
+  from = "/vaccinations"
+  to = "/vaccinations.html"
+  status = 200
+
+[[redirects]]
+  from = "/helpline-admin"
+  to = "/helpline-admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/disease-library"
+  to = "/disease-library.html"
+  status = 200
+
+[[redirects]]
+  from = "/care-plans"
+  to = "/care-plans.html"
+  status = 200
+
+# Catch-all fallback for client-side single page navigation
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/app"
+  to = "/index.html"
   status = 200
