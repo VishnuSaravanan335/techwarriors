@@ -199,6 +199,7 @@ async function initAssessmentPage() {
       <span style="font-size: 0.84rem; color: var(--text-primary); font-weight: 500;">${s}</span>
     </label>
   `).join('');
+  if (typeof applyCurrentLanguage === 'function') applyCurrentLanguage();
 
   // Load Animals into Select dropdown
   try {
@@ -252,10 +253,11 @@ function initVoiceAssistant() {
     return;
   }
 
+  const currentLang = localStorage.getItem('pashu_lang') || 'en';
   recognition = new SpeechRecognition();
-  recognition.continuous = true;
+  recognition.continuous = false;
   recognition.interimResults = true;
-  recognition.lang = 'en-IN'; // Works for Indian English, Tamil phonetics and transliterated words
+  recognition.lang = currentLang === 'ta' ? 'ta-IN' : 'en-IN';
 
   voiceBtn.addEventListener('click', () => {
     if (isListening) {
@@ -264,14 +266,24 @@ function initVoiceAssistant() {
     }
 
     try {
+      const activeLang = localStorage.getItem('pashu_lang') || 'en';
+      recognition.lang = activeLang === 'ta' ? 'ta-IN' : 'en-IN';
       recognition.start();
       isListening = true;
       voiceBtn.classList.add('listening');
-      label.innerText = 'Listening (Click to Stop)';
+      label.innerText = activeLang === 'ta' ? 'கேட்கிறது... (நிறுத்த கிளிக் செய்)' : 'Listening (Click to Stop)';
       banner.style.display = 'block';
-      textEl.innerHTML = '<span style="color: var(--green-dark);"><i class="fa-solid fa-microphone-lines fa-fade"></i> Listening... Speak symptoms now (e.g. "cow has high fever, blisters on mouth, not eating")</span>';
+      textEl.innerHTML = activeLang === 'ta' ?
+        '<span style="color: var(--green-dark);"><i class="fa-solid fa-microphone-lines fa-fade"></i> கேட்கிறது... அறிகுறிகளைப் பேசுங்கள் (எ.கா: "மாட்டுக்கு காய்ச்சல், சாப்பிடவில்லை, வாயில் புண்")</span>' :
+        '<span style="color: var(--green-dark);"><i class="fa-solid fa-microphone-lines fa-fade"></i> Listening... Speak symptoms now (e.g. "cow has high fever, blisters on mouth, not eating")</span>';
     } catch (e) {
       console.warn('Speech recognition start error:', e);
+      // Fallback dialog if mic access blocked or error
+      const promptMsg = (localStorage.getItem('pashu_lang') === 'ta') ?
+        'குரல் அல்லது அறிகுறிகளை உள்ளிடவும் (எ.கா: காய்ச்சல், கொப்பளம், சோர்வு, சாப்பிடவில்லை):' :
+        'Enter observed symptoms (e.g., fever, skin nodules, stopped eating, blisters):';
+      const input = prompt(promptMsg);
+      if (input) matchVoiceSymptoms(input);
       if (isListening) stopVoiceListening();
     }
   });

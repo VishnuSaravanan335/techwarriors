@@ -525,7 +525,7 @@
       }
 
       // 6. Manual assessment
-      if (pathname === '/api/assessment/manual' && method === 'POST') {
+      if ((pathname === '/api/assessments/manual' || pathname === '/api/assessment/manual') && method === 'POST') {
         let body = {};
         try { body = JSON.parse(options.body || '{}'); } catch(e){}
         const animalId = parseInt(body.animal_id, 10);
