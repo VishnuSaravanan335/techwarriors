@@ -355,6 +355,7 @@ for (const [en, ta] of Object.entries(DICTIONARY)) {
 
 // Phrase list sorted by descending length for sub-string replacements
 const PHRASE_LIST = Object.entries(DICTIONARY).sort((a, b) => b[0].length - a[0].length);
+const REVERSE_PHRASE_LIST = Object.entries(REVERSE_DICT).sort((a, b) => b[0].length - a[0].length);
 
 // ----------------- DISEASE CONTENT TRANSLATION DICTIONARY -----------------
 const DISEASE_TRANSLATIONS = {
@@ -476,9 +477,16 @@ function getRiskBadge(level) {
 
 // ----------------- COMPREHENSIVE BILINGUAL CLIENT TRANSLATOR -----------------
 function setLanguage(lang) {
-  localStorage.setItem('pashu_lang', lang);
+  try {
+    localStorage.setItem('pashu_lang', lang);
+  } catch (e) {
+    console.warn('Could not save language to localStorage:', e);
+  }
+  document.documentElement.lang = lang;
   applyCurrentLanguage();
-  showNotification(lang === 'ta' ? 'தமிழ் மொழிக்கு மாற்றப்பட்டது (Tamil Active)' : 'Switched to English', 'info');
+  if (typeof showNotification === 'function') {
+    showNotification(lang === 'ta' ? 'தமிழ் மொழிக்கு மாற்றப்பட்டது (Tamil Active)' : 'Switched to English', 'info');
+  }
 }
 
 function toggleLanguage() {
@@ -490,6 +498,8 @@ function toggleLanguage() {
 function translateDOMTree(root, targetLang) {
   if (!root) return;
 
+  const isTamilChar = /[\u0B80-\u0BFF]/;
+
   const walker = document.createTreeWalker(
     root,
     NodeFilter.SHOW_TEXT,
@@ -500,6 +510,7 @@ function translateDOMTree(root, targetLang) {
         const tag = parent.tagName.toUpperCase();
         if (['SCRIPT', 'STYLE', 'CODE', 'NOSCRIPT'].includes(tag)) return NodeFilter.FILTER_REJECT;
         if (parent.closest('#lang-switcher-bar') || parent.closest('#btn-lang-toggle')) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('[data-lang-en]')) return NodeFilter.FILTER_REJECT;
         if (parent.classList.contains('animal-code-tag')) return NodeFilter.FILTER_REJECT;
         if (parent.classList.contains('fa') || parent.classList.contains('fas') || parent.classList.contains('fa-solid')) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
@@ -519,17 +530,31 @@ function translateDOMTree(root, targetLang) {
     const trimmed = val.trim();
     if (!trimmed) continue;
 
-    // Cache the original English value on the node
-    if (typeof node._pashuOrigEn === 'undefined') {
-      node._pashuOrigEn = val;
+    // Maintain true original English text
+    if (typeof node._pashuOrigEn === 'undefined' || isTamilChar.test(node._pashuOrigEn)) {
+      if (REVERSE_DICT[trimmed]) {
+        node._pashuOrigEn = val.replace(trimmed, REVERSE_DICT[trimmed]);
+      } else if (!isTamilChar.test(val)) {
+        node._pashuOrigEn = val;
+      } else {
+        // Reverse translate Tamil phrases to reconstruct English
+        let recovered = val;
+        for (const [ta, en] of REVERSE_PHRASE_LIST) {
+          if (recovered.includes(ta)) {
+            recovered = recovered.split(ta).join(en);
+          }
+        }
+        node._pashuOrigEn = recovered;
+      }
     }
 
     if (targetLang === 'ta') {
-      if (DICTIONARY[trimmed]) {
-        node.nodeValue = val.replace(trimmed, DICTIONARY[trimmed]);
+      const source = node._pashuOrigEn || val;
+      const sourceTrimmed = source.trim();
+      if (DICTIONARY[sourceTrimmed]) {
+        node.nodeValue = source.replace(sourceTrimmed, DICTIONARY[sourceTrimmed]);
       } else {
-        // Try substring phrase replacement
-        let res = val;
+        let res = source;
         let matched = false;
         for (const [enPhrase, taPhrase] of PHRASE_LIST) {
           if (res.includes(enPhrase)) {
@@ -542,37 +567,58 @@ function translateDOMTree(root, targetLang) {
         }
       }
     } else {
-      // Restore English
-      if (node._pashuOrigEn) {
+      // Restore English cleanly
+      if (node._pashuOrigEn && !isTamilChar.test(node._pashuOrigEn)) {
         node.nodeValue = node._pashuOrigEn;
       } else if (REVERSE_DICT[trimmed]) {
         node.nodeValue = val.replace(trimmed, REVERSE_DICT[trimmed]);
+      } else {
+        let res = val;
+        for (const [taPhrase, enPhrase] of REVERSE_PHRASE_LIST) {
+          if (res.includes(taPhrase)) {
+            res = res.split(taPhrase).join(enPhrase);
+          }
+        }
+        node.nodeValue = res;
+        node._pashuOrigEn = res;
       }
     }
   }
 }
 
 function applyCurrentLanguage() {
-  const lang = localStorage.getItem('pashu_lang') || 'en';
+  const lang = (localStorage.getItem('pashu_lang') || 'en').toLowerCase();
+  document.documentElement.lang = lang;
   
   // 1. Update dual language buttons display in navbar
   const btnTa = document.getElementById('btn-lang-ta');
   const btnEn = document.getElementById('btn-lang-en');
   if (btnTa && btnEn) {
+    const iconTa = btnTa.querySelector('i');
     if (lang === 'ta') {
+      btnTa.classList.add('active-ta');
+      btnTa.classList.remove('active-en');
       btnTa.style.background = '#059669';
       btnTa.style.color = '#ffffff';
-      btnTa.style.boxShadow = '0 2px 8px rgba(5, 150, 105, 0.35)';
+      btnTa.style.boxShadow = '0 2px 8px rgba(5, 150, 105, 0.4)';
+      if (iconTa) iconTa.style.color = '#ffffff';
+
+      btnEn.classList.remove('active-en', 'active-ta');
       btnEn.style.background = 'transparent';
-      btnEn.style.color = 'var(--text-secondary)';
+      btnEn.style.color = '#334155';
       btnEn.style.boxShadow = 'none';
     } else {
+      btnEn.classList.add('active-en');
+      btnEn.classList.remove('active-ta');
       btnEn.style.background = '#0284c7';
       btnEn.style.color = '#ffffff';
-      btnEn.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.35)';
+      btnEn.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.4)';
+
+      btnTa.classList.remove('active-ta', 'active-en');
       btnTa.style.background = 'transparent';
-      btnTa.style.color = 'var(--text-secondary)';
+      btnTa.style.color = '#334155';
       btnTa.style.boxShadow = 'none';
+      if (iconTa) iconTa.style.color = '#059669';
     }
   }
 
@@ -722,7 +768,25 @@ window.setLanguage = setLanguage;
 window.applyCurrentLanguage = applyCurrentLanguage;
 window.toggleLanguage = toggleLanguage;
 
+function bindLanguageButtons() {
+  const btnTa = document.getElementById('btn-lang-ta');
+  const btnEn = document.getElementById('btn-lang-en');
+  if (btnTa) {
+    btnTa.onclick = function(e) {
+      if (e) e.preventDefault();
+      setLanguage('ta');
+    };
+  }
+  if (btnEn) {
+    btnEn.onclick = function(e) {
+      if (e) e.preventDefault();
+      setLanguage('en');
+    };
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  bindLanguageButtons();
   applyCurrentLanguage();
   setTimeout(applyCurrentLanguage, 300);
   setTimeout(applyCurrentLanguage, 1000);
