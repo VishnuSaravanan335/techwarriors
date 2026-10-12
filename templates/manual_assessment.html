@@ -18,26 +18,27 @@
       <form id="manual-assessment-form">
         <!-- 1. Select Animal -->
         <div class="form-group">
-          <label class="form-label">Select Registered Animal *</label>
+          <label class="form-label" data-lang-en="Select Registered Animal *" data-lang-ta="பதிவுசெய்த கால்நடையைத் தேர்ந்தெடுக்கவும் *">Select Registered Animal *</label>
           <select id="assessment-animal-id" class="form-control" required>
             <option value="">Loading animals...</option>
           </select>
-          <div class="form-hint" id="selected-animal-meta">Select animal to view reference vitals & history</div>
+          <div class="form-hint" id="selected-animal-meta" data-lang-en="Select animal to view reference vitals & history" data-lang-ta="ஆரம்ப உடல் நிலை விவரங்களைக் காண கால்நடையைத் தேர்ந்தெடுக்கவும்">Select animal to view reference vitals & history</div>
         </div>
 
         <!-- 2. Vitals (Optional) -->
         <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
           <h4 style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-temperature-half" style="color: var(--secondary);"></i> Optional Physical Measurements
+            <i class="fa-solid fa-temperature-half" style="color: var(--secondary);"></i>
+            <span data-lang-en="Optional Physical Measurements" data-lang-ta="உடல் அளவீடுகள் (விருப்பத்தேர்வு)">Optional Physical Measurements</span>
           </h4>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Body Temp (°C) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+              <label class="form-label" data-lang-en="Body Temp (°C) (Optional)" data-lang-ta="உடல் வெப்பநிலை (°C) (விருப்பத்தேர்வு)">Body Temp (°C) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
               <input type="number" step="0.1" id="vital-temp" class="form-control" placeholder="e.g. 38.6">
               <div class="form-hint" id="hint-temp-range">Normal: 38.0 - 39.3°C</div>
             </div>
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">Heart Rate (bpm) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
+              <label class="form-label" data-lang-en="Heart Rate (bpm) (Optional)" data-lang-ta="இதயத் துடிப்பு (bpm) (விருப்பத்தேர்வு)">Heart Rate (bpm) <span style="font-weight: 400; color: var(--text-muted);">(Optional)</span></label>
               <input type="number" step="1" id="vital-hr" class="form-control" placeholder="e.g. 70">
               <div class="form-hint" id="hint-hr-range">Normal: 48 - 84 bpm</div>
             </div>
@@ -47,7 +48,7 @@
         <!-- 3. Feeding & Activity Status -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
           <div class="form-group">
-            <label class="form-label">Feeding & Appetite *</label>
+            <label class="form-label" data-lang-en="Feeding & Appetite *" data-lang-ta="தீவனம் உண்ணும் நிலை *">Feeding & Appetite *</label>
             <select id="feeding-status" class="form-control" required>
               <option value="Normal Appetite" selected>Normal Appetite (வழக்கமான தீவனம்)</option>
               <option value="Reduced Feeding">Reduced Feeding (தீவனம் குறைந்துள்ளது)</option>
@@ -56,7 +57,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Activity & Posture *</label>
+            <label class="form-label" data-lang-en="Activity & Posture *" data-lang-ta="சுறுசுறுப்பு & செயல்பாடு *">Activity & Posture *</label>
             <select id="activity-status" class="form-control" required>
               <option value="Normal Active" selected>Normal Active & Alert</option>
               <option value="Dull / Lethargic">Dull / Lethargic (சோர்வாக உள்ளது)</option>
@@ -69,10 +70,10 @@
         <!-- 4. Observed Symptoms Checklist with Real Voice Recognition Assistant -->
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label class="form-label" style="margin-bottom: 0;">Observed Symptoms (Check all that apply)</label>
+            <label class="form-label" style="margin-bottom: 0;" data-lang-en="Observed Symptoms (Check all that apply)" data-lang-ta="தென்படும் அறிகுறிகள் (பொருந்துபவற்றைத் தேர்வு செய்யவும்)">Observed Symptoms (Check all that apply)</label>
             <button type="button" class="btn-voice-mic" id="btn-voice-assistant" title="Click to speak observed symptoms (English or Tamil)">
               <i class="fa-solid fa-microphone"></i>
-              <span id="voice-assistant-label">Voice Assistant</span>
+              <span id="voice-assistant-label" data-lang-en="Voice Assistant" data-lang-ta="குரல் வழி உள்ளீடு">Voice Assistant</span>
             </button>
           </div>
           <div id="voice-transcript-banner" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 0.8rem; color: #065f46;">
@@ -85,12 +86,12 @@
 
         <!-- Additional Notes -->
         <div class="form-group">
-          <label class="form-label">Additional Observations / Notes</label>
+          <label class="form-label" data-lang-en="Additional Observations / Notes" data-lang-ta="கூடுதல் மருத்துவக் குறிப்புகள்">Additional Observations / Notes</label>
           <textarea id="assessment-notes" rows="2" class="form-control" placeholder="e.g., Started showing signs yesterday evening; water intake dropped..."></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary" id="btn-run-assessment" style="width: 100%; justify-content: center; padding: 12px;">
-          <i class="fa-solid fa-brain"></i> Submit for AI Disease-Risk Analysis
+          <i class="fa-solid fa-brain"></i> <span data-lang-en="Submit for AI Disease-Risk Analysis" data-lang-ta="AI நோய் பகுப்பாய்விற்கு சமர்ப்பிக்கவும்">Submit for AI Disease-Risk Analysis</span>
         </button>
       </form>
     </div>
@@ -103,8 +104,8 @@
       <div style="font-size: 48px; color: var(--border-light); margin-bottom: 16px;">
         <i class="fa-solid fa-microscope"></i>
       </div>
-      <h3 style="color: var(--text-primary); margin-bottom: 8px;">AI Risk Engine Ready</h3>
-      <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto; font-size: 0.88rem;">
+      <h3 style="color: var(--text-primary); margin-bottom: 8px;" data-lang-en="AI Risk Engine Ready" data-lang-ta="AI பகுப்பாய்வு இயந்திரம் தயார்">AI Risk Engine Ready</h3>
+      <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto; font-size: 0.88rem;" data-lang-en="Fill in observed symptoms or vital readings and click 'Submit' to view a real-time risk classification, disease associations, explainable reasons, and veterinary recommendations." data-lang-ta="அறிகுறிகள் அல்லது உடல் அளவீடுகளை உள்ளிட்டு 'சமர்ப்பி' என்பதைக் கிளிக் செய்வதன் மூலம் நோய் ஆபத்து மதிப்பீடு, காரணங்கள் மற்றும் மருத்துவ பரிந்துரைகளைக் காணலாம்.">
         Fill in observed symptoms or vital readings and click "Submit" to view a real-time risk classification, disease associations, explainable reasons, and veterinary recommendations.
       </p>
     </div>
@@ -178,25 +179,25 @@
 {% block scripts %}
 <script>
 const SYMPTOMS_LIST = [
-  'Blisters / lesions on mouth or hooves',
-  'High fever with shivering',
-  'Sudden drop in milk yield (>40%)',
-  'Skin nodules / lumps on body',
-  'Swollen throat / difficulty breathing',
-  'Severe diarrhea or dysentery',
-  'Complete refusal to eat (Anorexia)',
-  'Lameness / unable to walk or stand',
-  'Eye discharge / cloudiness / tears',
-  'Dullness / Lethargy / Drooping ears'
+  { en: 'Blisters / lesions on mouth or hooves', ta: 'வாய் அல்லது கால்களில் கொப்பளங்கள் / புண்கள் (FMD)' },
+  { en: 'High fever with shivering', ta: 'நடுக்கத்துடன் கூடிய அதிக காய்ச்சல் (Fever)' },
+  { en: 'Sudden drop in milk yield (>40%)', ta: 'பால் உற்பத்தி திடீரென குறைதல் (>40%)' },
+  { en: 'Skin nodules / lumps on body', ta: 'உடலில் சருமக் கட்டிகள் / புடைப்புகள் (LSD)' },
+  { en: 'Swollen throat / difficulty breathing', ta: 'தொண்டை வீக்கம் / மூச்சுத் திணறல் (HS)' },
+  { en: 'Severe diarrhea or dysentery', ta: 'கடுமையான வயிற்றுப்போக்கு (Diarrhea)' },
+  { en: 'Complete refusal to eat (Anorexia)', ta: 'தீவனம் உண்ண முற்றிலும் மறுத்தல் (Off-Feed)' },
+  { en: 'Lameness / unable to walk or stand', ta: 'நொண்டி நடத்தல் / நடக்க முடியாமை (Lameness)' },
+  { en: 'Eye discharge / cloudiness / tears', ta: 'கண்களில் நீர் / பீளை / வெண்படலம் (Eye Discharge)' },
+  { en: 'Dullness / Lethargy / Drooping ears', ta: 'காதுகள் தொங்குதல் / மந்தமான நிலை (Lethargy)' }
 ];
 
 async function initAssessmentPage() {
-  // Render symptoms checklist
+  // Render symptoms checklist with direct bilingual data-lang attributes
   const container = document.getElementById('symptoms-checklist-container');
-  container.innerHTML = SYMPTOMS_LIST.map((s, idx) => `
+  container.innerHTML = SYMPTOMS_LIST.map((item, idx) => `
     <label class="checkbox-card" id="card-symptom-${idx}">
-      <input type="checkbox" name="symptom_item" value="${s}">
-      <span style="font-size: 0.84rem; color: var(--text-primary); font-weight: 500;">${s}</span>
+      <input type="checkbox" name="symptom_item" value="${item.en}">
+      <span data-lang-en="${item.en}" data-lang-ta="${item.ta}" style="font-size: 0.84rem; color: var(--text-primary); font-weight: 500;">${item.en}</span>
     </label>
   `).join('');
   if (typeof applyCurrentLanguage === 'function') applyCurrentLanguage();

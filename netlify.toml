@@ -6,11 +6,11 @@
 [build.environment]
   PYTHON_VERSION = "3.10"
 
-# Static assets CDN caching
+# Ensure fresh assets on deployments
 [[headers]]
   for = "/static/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Direct clean URL rewrites for application pages
 [[redirects]]

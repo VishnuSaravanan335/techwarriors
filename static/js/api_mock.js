@@ -383,15 +383,26 @@
   const originalFetch = window.fetch;
 
   window.fetch = async function (resource, options = {}) {
-    const urlStr = typeof resource === 'string' ? resource : (resource ? resource.url : '');
-    
-    // Only intercept local /api/ requests
-    if (urlStr.startsWith('/api/')) {
+    let urlStr = '';
+    if (typeof resource === 'string') {
+      urlStr = resource;
+    } else if (resource && resource.url) {
+      urlStr = resource.url;
+    }
+
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(urlStr, window.location.origin);
+    } catch (e) {
+      parsedUrl = null;
+    }
+
+    // Intercept any local or origin /api/ requests
+    if (parsedUrl && parsedUrl.pathname.includes('/api/')) {
       await initDatabase();
       const db = getDB() || {};
-      const method = (options.method || 'GET').toUpperCase();
-      const parsedUrl = new URL(urlStr, window.location.origin);
-      const pathname = parsedUrl.pathname;
+      const method = (options.method || (resource && resource.method) || 'GET').toUpperCase();
+      const pathname = parsedUrl.pathname.replace(/\/+$/, '');
       const params = parsedUrl.searchParams;
 
       // 1. Current user
@@ -556,9 +567,9 @@
       if ((pathname === '/api/assessments/manual' || pathname === '/api/assessment/manual') && method === 'POST') {
         let body = {};
         try { body = JSON.parse(options.body || '{}'); } catch(e){}
-        const animalId = parseInt(body.animal_id, 10);
-        const animal = (db.animals || []).find(a => a.id === animalId) || {};
-        const abnormalHistory = (db.sensor_readings || []).filter(sr => sr.animal_id === animalId && sr.is_abnormal).length;
+        const animalId = parseInt(body.animal_id, 10) || 1;
+        const animal = (db.animals || []).find(a => a.id === animalId) || (db.animals || [])[0] || { id: 1, species: 'Cow', animal_code: 'COW-1047', animal_name: 'Lakshmi' };
+        const abnormalHistory = (db.sensor_readings || []).filter(sr => sr.animal_id === animal.id && sr.is_abnormal).length;
 
         const analysis = evaluateRisk(
           animal.species || 'Cow',
