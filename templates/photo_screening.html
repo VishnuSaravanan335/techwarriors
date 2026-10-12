@@ -266,48 +266,123 @@ document.getElementById('vision-upload-form').addEventListener('submit', async f
   }
 });
 
+const VISION_TAMIL_MAP = {
+  thin: {
+    condition: "குறைந்த உடல் நிலை மதிப்பீடு (BCS < 2.0 / தீவிர மெலிவு)",
+    findings: "விலா எலும்புகள், முதுகுத்தண்டு மற்றும் இடுப்பு எலும்புகள் துருத்திக் கொண்டு தசை வெகுவாகக் குறைந்து காணப்படுகிறது.",
+    causes: [
+      "போதிய ஊட்டச்சத்து இல்லாத உணவளிப்பு அல்லது குறைந்த தரமுள்ள தீவனம்",
+      "கல்லீரல் மற்றும் குடற்புழுக்களின் தீவிர பாதிப்பு",
+      "பல் தேய்மானம் அல்லது அசைபோட இயலாமை",
+      "ஜோன்ஸ் நோய் (பாராடூபர்குலோசிஸ்) உள்ளுறை பாதிப்பு"
+    ],
+    safe_care: [
+      "சுத்தமான குளிர்ந்த குடிநீர் மற்றும் செரிக்கக்கூடிய பசுந்தீவனம் சிறுகச் சிறுக அடிக்கடி வழங்கவும்.",
+      "மென்மையான வைக்கோல் படுக்கை அமைத்து நிழலான கொட்டகையில் பராமரிக்கவும்.",
+      "மருத்துவர் ஆலோசனை இன்றி சொந்தமாக வலுவான குடற்புழு மருந்துகளை செலுத்தக் கூடாது."
+    ],
+    followup: [
+      "மாட்டுக்கு நீண்ட நாட்களாக நீர்த்த சாணம் அல்லது கழிச்சல் உள்ளதா?",
+      "தற்போது கறவையில் உள்ளதா அல்லது அண்மையில் கன்று ஈன்றதா?",
+      "கடைசியாக எப்போது குடற்புழு நீக்கம் செய்யப்பட்டது?"
+    ],
+    vet_plan: "கால்நடை மருத்துவரிடம் சாணப் பரிசோதனை செய்து சரிவிகித சத்துணவு மற்றும் தகுந்த குடற்புழு நீக்கம் செய்யவும்.",
+    escalation: "மாடு படுத்து எழ முடியாமல் போனால் (Downer Cow) அல்லது உடல் வெப்பநிலை 37.5°C-க்கு கீழ் குறைந்தால் உடனடியாக 1962-க்கு அழைக்கவும்."
+  },
+  lsd: {
+    condition: "சருமக் கழலை நோய் சந்தேகம் (LSD Cutaneous Nodules)",
+    findings: "கழுத்து, முதுகு மற்றும் உடல் முழுவதும் 2-5 செ.மீ அளவிலான உருண்டையான கடினமான சருமக் கட்டிகள் காணப்படுகின்றன.",
+    causes: [
+      "கேப்ரிபாக்ஸ் வைரஸ் தொற்று (LSD)",
+      "சூடோ-லம்பி நோய் (போவைன் ஹெர்பெஸ் வைரஸ் 2)",
+      "கொசு மற்றும் கடிக்கும் ஈக்களின் ஒவ்வாமை"
+    ],
+    safe_care: [
+      "பாதிக்கப்பட்ட மாட்டை மற்ற மாடுகளிலிருந்து உடனடியாக தனியாகக் கட்டவும்.",
+      "புண்களின் மீது வேப்பெண்ணெய் அல்லது பொட்டாசியம் பெர்மாங்கனேட் கரைசல் தடவி ஈக்கள் அமராமல் தடுக்கவும்.",
+      "கொட்டகையை சுத்தமாக பராமரித்து கொசு, ஈக்களைக் கட்டுப்படுத்தவும்."
+    ],
+    followup: [
+      "தோள்பட்டை அல்லது தொடை நிணநீர் சுரப்பிகள் வீங்கியுள்ளனவா?",
+      "காய்ச்சல் (>40°C) மற்றும் பால் உற்பத்தி திடீரென குறைந்துள்ளதா?",
+      "ஊரில் பிற மாடுகளுக்கும் இக்கட்டிகள் தென்படுகின்றனவா?"
+    ],
+    vet_plan: "காய்ச்சலைக் கட்டுப்படுத்தவும் புண்களில் புழுக்கள் வைக்காமல் தடுக்கவும் மருத்துவர் வழிகாட்டுதல்படி மருந்தளிக்கவும்.",
+    escalation: "தொண்டையில் கட்டிகள் ஏற்பட்டு மூச்சு விடத் திணறினால் அல்லது மடி அழுகினால் உடனடியாக மருத்துவரை அழைக்கவும்."
+  },
+  fmd: {
+    condition: "கோமாரி நோய் சந்தேகம் (FMD Vesicular Ulcerations)",
+    findings: "வாய், நாக்கு, ஈறுகள் மற்றும் குளம்பு இடுக்குகளில் கொப்பளங்களும் சிவந்த புண்களும் காணப்படுகின்றன.",
+    causes: [
+      "அப்தோவைரஸ் (Foot and Mouth Disease)",
+      "வெசிகுலர் ஸ்டோமாடிடிஸ்",
+      "குளம்பு அழுகல் தொற்று"
+    ],
+    safe_care: [
+      "மாட்டை ஈரமில்லாத மென்மையான மணல் தரையில் கட்டவும்.",
+      "வாயை பொட்டாசியம் பெர்மாங்கனேட் (1:1000) அல்லது படிகார நீரால் கழுவவும்.",
+      "கஞ்சி, கூழ் போன்ற மென்மையான உணவுகளை மட்டுமே ஊட்டவும்."
+    ],
+    followup: [
+      "நூல் போல் உமிழ்நீர் ஒழுகுதல் அல்லது கால்களை உதறுதல் தென்படுகிறதா?",
+      "மாடு நடக்க முடியாமல் காலை ஊன்ற மறுக்கிறதா?"
+    ],
+    vet_plan: "பாதுகாப்பான காய மருந்து, குளம்பு குளியல் மற்றும் அவசர மருத்துவ பராமரிப்பு மேற்கொள்ளவும்.",
+    escalation: "குளம்பு கழன்று விழுந்தாலோ அல்லது இளங்கன்றுகள் பலவீனமடைந்தாலோ தாமதிக்காமல் 1962 ஆம்புலன்ஸை அழைக்கவும்."
+  },
+  healthy: {
+    condition: "ஆரோக்கியமான மாடு / உகந்த உடல் நிலை",
+    findings: "பளபளப்பான தோல், சீரான தசை அமைப்பு, தெளிவான கண்கள் மற்றும் நல்ல ஆரோக்கிய நிலை.",
+    causes: ["சீரான சமவிகித சத்துணவு மற்றும் நல்ல பண்ணை பராமரிப்பு"],
+    safe_care: ["தொடர்ந்து தூய குடிநீர், பசுந்தீவனம் மற்றும் தாது உப்புக் கலவை வழங்கவும்."],
+    followup: ["வழக்கமான NADCP தடுப்பூசி அட்டவணையை தொடர்ந்து கடைப்பிடிக்கவும்."],
+    vet_plan: "ஆறு மாதத்திற்கு ஒருமுறை வழக்கமான மருத்துவப் பரிசோதனை மற்றும் தடுப்பூசிகள் தொடரவும்.",
+    escalation: "எந்தவொரு தீவிர நோய்க் குறிகளும் இல்லை."
+  }
+};
+
 function renderCarePlanResult(screening) {
   document.getElementById('vision-result-placeholder').style.display = 'none';
   const card = document.getElementById('vision-result-card');
+  card._currentScreening = screening;
   card.style.display = 'block';
+
+  const isTa = (localStorage.getItem('pashu_lang') === 'ta');
+  const condText = (screening.screened_condition || '').toLowerCase();
+  let taData = null;
+  if (condText.includes('bcs') || condText.includes('underweight') || condText.includes('thin')) taData = VISION_TAMIL_MAP.thin;
+  else if (condText.includes('lsd') || condText.includes('lumpy') || condText.includes('nodule')) taData = VISION_TAMIL_MAP.lsd;
+  else if (condText.includes('fmd') || condText.includes('mouth') || condText.includes('hoof') || condText.includes('vesic')) taData = VISION_TAMIL_MAP.fmd;
+  else if (condText.includes('healthy') || condText.includes('normal')) taData = VISION_TAMIL_MAP.healthy;
 
   // Badges
   document.getElementById('vision-risk-badge').innerHTML = getRiskBadge(screening.risk_level);
-  document.getElementById('vision-quality-tag').innerText = `Quality: ${screening.image_quality_check}`;
-  document.getElementById('vision-confidence-tag').innerText = `Confidence: ${Math.round(screening.confidence * 100)}%`;
-  document.getElementById('vision-bcs-tag').innerText = `BCS: ${screening.bcs_category || 'Assessed'}`;
+  document.getElementById('vision-quality-tag').innerText = isTa ? `படத் தரம்: நன்று` : `Quality: ${screening.image_quality_check}`;
+  document.getElementById('vision-confidence-tag').innerText = isTa ? `துல்லியம்: ${Math.round(screening.confidence * 100)}%` : `Confidence: ${Math.round(screening.confidence * 100)}%`;
+  document.getElementById('vision-bcs-tag').innerText = isTa ? `BCS மதிப்பீடு` : `BCS: ${screening.bcs_category || 'Assessed'}`;
 
   // 1. Findings
-  document.getElementById('vision-condition-title').innerText = screening.screened_condition;
-  document.getElementById('vision-findings-text').innerText = screening.visual_findings;
+  document.getElementById('vision-condition-title').innerText = (isTa && taData) ? taData.condition : screening.screened_condition;
+  document.getElementById('vision-findings-text').innerText = (isTa && taData) ? taData.findings : screening.visual_findings;
 
   // 2. Differential Causes
   const causesList = document.getElementById('vision-causes-list');
-  if (screening.differential_causes && screening.differential_causes.length > 0) {
-    causesList.innerHTML = screening.differential_causes.map(c => `<li>${c}</li>`).join('');
-  } else {
-    causesList.innerHTML = '<li>General physiological monitoring advised.</li>';
-  }
+  const causes = (isTa && taData) ? taData.causes : (screening.differential_causes || ['General monitoring advised.']);
+  causesList.innerHTML = causes.map(c => `<li>${c}</li>`).join('');
 
   // 3. Safe Immediate Care
   const safeList = document.getElementById('vision-safe-care-list');
-  if (screening.safe_immediate_care && screening.safe_immediate_care.length > 0) {
-    safeList.innerHTML = screening.safe_immediate_care.map(s => `<li>${s}</li>`).join('');
-  } else {
-    safeList.innerHTML = '<li>Provide fresh water, standard green forage, and comfortable bedding.</li>';
-  }
+  const safeCare = (isTa && taData) ? taData.safe_care : (screening.safe_immediate_care || ['Provide fresh water and forage.']);
+  safeList.innerHTML = safeCare.map(s => `<li>${s}</li>`).join('');
 
   // 4. Follow-up Questions
   const fuList = document.getElementById('vision-followup-list');
-  if (screening.followup_questions && screening.followup_questions.length > 0) {
-    fuList.innerHTML = screening.followup_questions.map(q => `<li>${q}</li>`).join('');
-  } else {
-    fuList.innerHTML = '<li>Observe appetite and rumination over the next 24 hours.</li>';
-  }
+  const followup = (isTa && taData) ? taData.followup : (screening.followup_questions || ['Observe appetite.']);
+  fuList.innerHTML = followup.map(q => `<li>${q}</li>`).join('');
 
   // 5. Vet Care Plan & Escalation
-  document.getElementById('vision-vet-plan-text').innerText = screening.veterinary_care_plan || 'Consult a veterinarian for detailed examination.';
-  document.getElementById('vision-escalation-text').innerText = screening.escalation_triggers || 'Seek urgent help if animal collapses or stops eating.';
+  document.getElementById('vision-vet-plan-text').innerText = (isTa && taData) ? taData.vet_plan : (screening.veterinary_care_plan || 'Consult a veterinarian for detailed examination.');
+  document.getElementById('vision-escalation-text').innerText = (isTa && taData) ? taData.escalation : (screening.escalation_triggers || 'Seek urgent help if animal collapses.');
 
   // Disease Library link
   const libLink = document.getElementById('link-disease-library');
@@ -325,6 +400,8 @@ function renderCarePlanResult(screening) {
     card.style.borderColor = 'var(--gold-border)';
   } else {
     card.style.borderColor = 'var(--green-border)';
+  }
+
   if (typeof applyCurrentLanguage === 'function') {
     applyCurrentLanguage();
   }

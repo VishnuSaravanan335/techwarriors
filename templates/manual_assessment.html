@@ -429,10 +429,24 @@ document.getElementById('manual-assessment-form').addEventListener('submit', asy
   }
 });
 
+const CONDITIONS_TAMIL_MAP = {
+  'Foot and Mouth Disease (FMD)': 'கோமாரி நோய் (FMD)',
+  'Lumpy Skin Disease (LSD)': 'சருமக் கழலை நோய் (LSD)',
+  'Hemorrhagic Septicemia (HS)': 'தொண்டை அடைப்பான் நோய் (HS)',
+  'Black Quarter (BQ)': 'கருங்கால் நோய் (BQ)',
+  'Brucellosis': 'புருசெல்லோசிஸ்',
+  'Healthy / Normal Physiological State': 'ஆரோக்கியமான வழக்கமான நிலை',
+  'Mild Indigestion or Early Subclinical State': 'லேசான செரிமானக் குறைபாடு / ஆரம்ப நிலை',
+  'Acute Unspecified Systemic Infection': 'தீவிர பொதுத் தொற்று'
+};
+
 function renderAssessmentResult(res, animalCode, animalName) {
   document.getElementById('ai-result-placeholder').style.display = 'none';
   const box = document.getElementById('ai-result-box');
+  box._currentResult = { res, animalCode, animalName };
   box.style.display = 'block';
+
+  const isTa = (localStorage.getItem('pashu_lang') === 'ta');
 
   document.getElementById('result-risk-badge').innerHTML = getRiskBadge(res.risk_level);
   document.getElementById('result-score-number').innerText = `${res.risk_score} / 100`;
@@ -459,12 +473,17 @@ function renderAssessmentResult(res, animalCode, animalName) {
     document.getElementById('result-emergency-cta').style.display = 'none';
   }
 
-  document.getElementById('result-suspected-conditions').innerText = res.suspected_conditions.join(', ');
+  const conditionsDisplay = isTa ? 
+    res.suspected_conditions.map(c => CONDITIONS_TAMIL_MAP[c] || c).join(', ') : 
+    res.suspected_conditions.join(', ');
+  document.getElementById('result-suspected-conditions').innerText = conditionsDisplay;
+
   const reasonsList = document.getElementById('result-reasons-list');
   reasonsList.innerHTML = res.reasons_breakdown.map(r => `<li>${r}</li>`).join('');
 
-  document.getElementById('result-urgency-title').innerText = res.urgency_level;
-  document.getElementById('result-rec-text').innerText = res.recommendations;
+  document.getElementById('result-urgency-title').innerText = isTa ? (DICTIONARY[res.urgency_level] || res.urgency_level) : res.urgency_level;
+  document.getElementById('result-rec-text').innerText = isTa ? (DICTIONARY[res.recommendations] || res.recommendations) : res.recommendations;
+
   if (typeof applyCurrentLanguage === 'function') applyCurrentLanguage();
   box.scrollIntoView({ behavior: 'smooth' });
 }

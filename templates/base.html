@@ -103,11 +103,15 @@
       </div>
 
       <div class="top-actions">
-        <!-- Tamil / English Language Switcher Button -->
-        <button type="button" class="btn btn-secondary btn-sm" id="btn-lang-toggle" onclick="toggleLanguage()" style="font-weight: 800; border: 1.5px solid var(--blue-primary); color: var(--blue-dark); padding: 6px 12px;">
-          <i class="fa-solid fa-language" style="font-size: 1.1rem; color: var(--green-dark);"></i>
-          <span id="current-lang-text">தமிழ் (Tamil)</span>
-        </button>
+        <!-- Bilingual Option Switcher: Tamil & English -->
+        <div class="lang-switch-container" id="lang-switcher-bar" style="display: inline-flex; align-items: center; background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 10px; padding: 2px; box-shadow: var(--shadow-subtle);">
+          <button type="button" id="btn-lang-ta" onclick="setLanguage('ta')" style="border: none; border-radius: 8px; padding: 6px 14px; font-weight: 800; font-size: 0.86rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--text-secondary);">
+            <i class="fa-solid fa-language" style="color: #059669;"></i> தமிழ்
+          </button>
+          <button type="button" id="btn-lang-en" onclick="setLanguage('en')" style="border: none; border-radius: 8px; padding: 6px 14px; font-weight: 800; font-size: 0.86rem; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; background: var(--blue-primary); color: #ffffff;">
+            English
+          </button>
+        </div>
 
         <span class="badge-tag badge-sih"><i class="fa-solid fa-award"></i> SIH26128</span>
         <a href="/emergency-vet" class="badge-tag badge-emergency">

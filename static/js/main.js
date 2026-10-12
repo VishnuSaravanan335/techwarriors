@@ -475,12 +475,16 @@ function getRiskBadge(level) {
 }
 
 // ----------------- COMPREHENSIVE BILINGUAL CLIENT TRANSLATOR -----------------
+function setLanguage(lang) {
+  localStorage.setItem('pashu_lang', lang);
+  applyCurrentLanguage();
+  showNotification(lang === 'ta' ? 'தமிழ் மொழிக்கு மாற்றப்பட்டது (Tamil Active)' : 'Switched to English', 'info');
+}
+
 function toggleLanguage() {
   const current = localStorage.getItem('pashu_lang') || 'en';
   const next = current === 'en' ? 'ta' : 'en';
-  localStorage.setItem('pashu_lang', next);
-  applyCurrentLanguage();
-  showNotification(next === 'ta' ? 'தமிழ் மொழி மாற்றப்பட்டது (Tamil Active)' : 'Switched to English', 'info');
+  setLanguage(next);
 }
 
 function translateDOMTree(root, targetLang) {
@@ -495,7 +499,7 @@ function translateDOMTree(root, targetLang) {
         if (!parent) return NodeFilter.FILTER_REJECT;
         const tag = parent.tagName.toUpperCase();
         if (['SCRIPT', 'STYLE', 'CODE', 'NOSCRIPT'].includes(tag)) return NodeFilter.FILTER_REJECT;
-        if (parent.closest('#btn-lang-toggle')) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('#lang-switcher-bar') || parent.closest('#btn-lang-toggle')) return NodeFilter.FILTER_REJECT;
         if (parent.classList.contains('animal-code-tag')) return NodeFilter.FILTER_REJECT;
         if (parent.classList.contains('fa') || parent.classList.contains('fas') || parent.classList.contains('fa-solid')) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
@@ -551,7 +555,28 @@ function translateDOMTree(root, targetLang) {
 function applyCurrentLanguage() {
   const lang = localStorage.getItem('pashu_lang') || 'en';
   
-  // 1. Update toggle button display
+  // 1. Update dual language buttons display in navbar
+  const btnTa = document.getElementById('btn-lang-ta');
+  const btnEn = document.getElementById('btn-lang-en');
+  if (btnTa && btnEn) {
+    if (lang === 'ta') {
+      btnTa.style.background = '#059669';
+      btnTa.style.color = '#ffffff';
+      btnTa.style.boxShadow = '0 2px 8px rgba(5, 150, 105, 0.35)';
+      btnEn.style.background = 'transparent';
+      btnEn.style.color = 'var(--text-secondary)';
+      btnEn.style.boxShadow = 'none';
+    } else {
+      btnEn.style.background = '#0284c7';
+      btnEn.style.color = '#ffffff';
+      btnEn.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.35)';
+      btnTa.style.background = 'transparent';
+      btnTa.style.color = 'var(--text-secondary)';
+      btnTa.style.boxShadow = 'none';
+    }
+  }
+
+  // Also support legacy toggle button if present
   const btnText = document.getElementById('current-lang-text');
   if (btnText) {
     if (lang === 'en') {
@@ -604,9 +629,44 @@ function applyCurrentLanguage() {
     }
   });
 
-  // 6. Translate Disease Detail Modal & Cards if open
+  // 6. Translate dynamic components if active
   translateDiseaseModalIfOpen(lang);
   translateDiseaseCardsIfPresent(lang);
+  translateCarePlanIfOpen(lang);
+  translateAssessmentIfOpen(lang);
+  translateTelemetryIfOpen(lang);
+}
+
+function translateCarePlanIfOpen(lang) {
+  const card = document.getElementById('vision-result-card');
+  if (card && card.style.display !== 'none' && card._currentScreening) {
+    if (typeof renderCarePlanResult === 'function') {
+      renderCarePlanResult(card._currentScreening);
+    }
+  }
+}
+
+function translateAssessmentIfOpen(lang) {
+  const box = document.getElementById('ai-result-box');
+  if (box && box.style.display !== 'none' && box._currentResult) {
+    if (typeof renderAssessmentResult === 'function') {
+      const { res, animalCode, animalName } = box._currentResult;
+      renderAssessmentResult(res, animalCode, animalName);
+    }
+  }
+}
+
+function translateTelemetryIfOpen(lang) {
+  const statusEl = document.getElementById('live-temp-status');
+  if (statusEl) {
+    const isTa = (lang === 'ta');
+    const isAbn = statusEl.style.color.includes('f43f5e') || statusEl.innerText.includes('ABNORMAL') || statusEl.innerText.includes('எச்சரிக்கை');
+    if (isAbn) {
+      statusEl.innerText = isTa ? '⚠️ எச்சரிக்கை: அளவீடு வழக்கத்திற்கு மாறாக உள்ளது' : '⚠️ ABNORMAL: Reading exceeded normal bounds';
+    } else {
+      statusEl.innerText = isTa ? 'இயல்பான ஆரோக்கிய எல்லைக்குள் உள்ளது' : 'Within normal physiological range';
+    }
+  }
 }
 
 function translateDiseaseCardsIfPresent(lang) {
@@ -616,7 +676,6 @@ function translateDiseaseCardsIfPresent(lang) {
   // If allDiseases array is loaded in disease_library.html
   if (typeof allDiseases !== 'undefined' && Array.isArray(allDiseases) && allDiseases.length > 0) {
     if (typeof renderDiseaseCards === 'function') {
-      // Let renderDiseaseCards re-render with active language
       renderDiseaseCards(allDiseases);
     }
   }
@@ -658,7 +717,8 @@ function translateDiseaseModalIfOpen(lang) {
   }
 }
 
-// Global hook for dynamic content translation
+// Global hooks for dynamic content translation
+window.setLanguage = setLanguage;
 window.applyCurrentLanguage = applyCurrentLanguage;
 window.toggleLanguage = toggleLanguage;
 

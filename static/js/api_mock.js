@@ -456,15 +456,43 @@
         const animal = (db.animals || []).find(a => a.id === id);
         if (!animal) return mockResponse({ error: 'Animal not found' }, 404);
         const user = (db.users || []).find(u => u.id === animal.owner_id) || {};
-        const readings = (db.sensor_readings || []).filter(sr => sr.animal_id === id).slice(-20);
+        let readings = (db.sensor_readings || []).filter(sr => sr.animal_id === id);
+        
+        // If no readings exist yet, seed a baseline reading so telemetry never displays blank/error
+        if (!readings || readings.length === 0) {
+          const defaultDev = animal.iot_device_id || `ESP32-TAG-${animal.animal_code ? animal.animal_code.split('-')[1] : '1047'}`;
+          const initReading = {
+            id: 1,
+            animal_id: id,
+            device_id: defaultDev,
+            temperature: animal.baseline_temp || 38.6,
+            heart_rate: animal.baseline_hr || 68,
+            activity_level: 'Normal Grazing',
+            steps_per_hour: 180,
+            rumination_time_min: 52,
+            is_abnormal: 0,
+            is_simulated: 1,
+            recorded_at: new Date().toLocaleTimeString()
+          };
+          db.sensor_readings = db.sensor_readings || [];
+          db.sensor_readings.push(initReading);
+          saveDB(db);
+          readings = [initReading];
+        }
+
         const assessments = (db.risk_assessments || []).filter(ra => ra.animal_id === id).slice(-10);
+        const reversedReadings = [...readings].reverse();
+
         return mockResponse({
           ...animal,
+          animal: animal,
           owner_name: user.name,
           owner_mobile: user.mobile,
           state: user.state,
           district: user.district,
-          sensor_readings: readings,
+          recent_readings: reversedReadings,
+          sensor_readings: reversedReadings,
+          recent_assessments: assessments,
           assessments: assessments
         });
       }
@@ -627,18 +655,25 @@
           isAbnormal = 1;
         }
 
-        db.sensor_readings = db.sensor_readings || [];
-        db.sensor_readings.push({
-          id: db.sensor_readings.length + 1,
+        const steps = scenario === 'lethargic' ? 35 : (scenario === 'fever' ? 80 : (scenario === 'critical_infection' ? 10 : 185));
+        const rumination = scenario === 'lethargic' ? 16 : (scenario === 'critical_infection' ? 8 : (scenario === 'fever' ? 28 : 52));
+
+        const readingItem = {
+          id: (db.sensor_readings || []).length + 1,
           animal_id: animalId,
           device_id: animal.iot_device_id || 'ESP32-COLLAR-1047',
           temperature: temp,
           heart_rate: hr,
           activity_level: act,
+          steps_per_hour: steps,
+          rumination_time_min: rumination,
           is_abnormal: isAbnormal,
           is_simulated: 1,
-          recorded_at: new Date().toISOString()
-        });
+          recorded_at: new Date().toLocaleTimeString()
+        };
+
+        db.sensor_readings = db.sensor_readings || [];
+        db.sensor_readings.push(readingItem);
 
         if (isAbnormal) {
           const evalRes = evaluateRisk(animal.species, temp, hr, act);
@@ -660,15 +695,38 @@
         return mockResponse({
           success: true,
           scenario: scenario,
-          telemetry: {
-            temperature: temp,
-            heart_rate: hr,
-            activity_level: act,
-            is_abnormal: isAbnormal,
-            device_id: animal.iot_device_id || 'ESP32-COLLAR-1047',
-            recorded_at: new Date().toISOString()
-          }
+          telemetry: readingItem
         });
+      }
+
+      // 7b. IoT direct webhook
+      if (pathname === '/api/iot/telemetry' && method === 'POST') {
+        let body = {};
+        try { body = JSON.parse(options.body || '{}'); } catch(e){}
+        const deviceId = body.device_id || 'ESP32-COLLAR-1047';
+        const animal = (db.animals || []).find(a => a.iot_device_id === deviceId) || (db.animals || [])[0] || { id: 1, animal_code: 'COW-1047', species: 'Cow' };
+        const temp = parseFloat(body.temperature) || 38.6;
+        const hr = parseFloat(body.heart_rate) || 68;
+        const act = body.activity || 'Normal';
+        const isAbn = (temp > 39.5 || hr > 84) ? 1 : 0;
+
+        const newReading = {
+          id: (db.sensor_readings || []).length + 1,
+          animal_id: animal.id,
+          device_id: deviceId,
+          temperature: temp,
+          heart_rate: hr,
+          activity_level: act,
+          steps_per_hour: 175,
+          rumination_time_min: 50,
+          is_abnormal: isAbn,
+          is_simulated: 0,
+          recorded_at: new Date().toLocaleTimeString()
+        };
+        db.sensor_readings = db.sensor_readings || [];
+        db.sensor_readings.push(newReading);
+        saveDB(db);
+        return mockResponse({ success: true, reading: newReading });
       }
 
       // 8. Vision screening
