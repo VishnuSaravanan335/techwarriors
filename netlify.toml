@@ -1,0 +1,20 @@
+# Netlify Deployment Configuration for SIH26128 Smart Animal Health Platform
+[build]
+  command = "python -c \"import shutil, os; os.makedirs('public', exist_ok=True); shutil.copytree('static', 'public/static', dirs_exist_ok=True)\""
+  publish = "public"
+  functions = "netlify/functions"
+
+[build.environment]
+  PYTHON_VERSION = "3.10"
+
+# Direct static CDN routing for CSS, JS, and uploads
+[[redirects]]
+  from = "/static/*"
+  to = "/static/:splat"
+  status = 200
+
+# Route all pages and API endpoints to the Netlify Serverless Python function
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/app"
+  status = 200

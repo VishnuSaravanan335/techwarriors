@@ -10,7 +10,10 @@ from seed_data import generate_unique_animal_code, seed_database
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = os.environ.get('SECRET_KEY', 'sih26128_smart_livestock_health_key_2026')
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+if os.environ.get('AWS_LAMBDA_FUNCTION_NAME') or os.environ.get('LAMBDA_TASK_ROOT') or os.environ.get('NETLIFY'):
+    UPLOAD_FOLDER = os.path.join('/tmp', 'uploads')
+else:
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Ensure database and seed data are ready on launch

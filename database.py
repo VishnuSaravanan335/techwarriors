@@ -1,8 +1,20 @@
 import os
+import shutil
 import sqlite3
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'database', 'livestock_health.db')
+ORIGINAL_DB_PATH = os.path.join(os.path.dirname(__file__), 'database', 'livestock_health.db')
+
+# In serverless environments like Netlify/AWS Lambda, root is read-only so use writable /tmp
+if os.environ.get('AWS_LAMBDA_FUNCTION_NAME') or os.environ.get('LAMBDA_TASK_ROOT') or os.environ.get('NETLIFY'):
+    DB_PATH = os.path.join('/tmp', 'livestock_health.db')
+    if not os.path.exists(DB_PATH) and os.path.exists(ORIGINAL_DB_PATH):
+        try:
+            shutil.copy2(ORIGINAL_DB_PATH, DB_PATH)
+        except Exception:
+            pass
+else:
+    DB_PATH = ORIGINAL_DB_PATH
 
 def get_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
